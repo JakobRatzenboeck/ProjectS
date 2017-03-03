@@ -14,18 +14,22 @@ public class Autogenerate {
 	public Autogenerate(int wieViele) {
 		fuellen(wieViele);
 	}
-	//asdfbsdf
+	// asdfbsdf
 	// public Autogenerate() {
 	// reihenfuellen(0, 0);
 	// }
 
 	// Sollte auf zwei methoden geandert werden
-	public boolean reiheUSpalte(int x, int y, int nummber) {
+	public boolean reihe(int x, int y, int nummber) {
 		for (int i = 0; i < 9; i++) {
 			if (feld[i][y] == nummber) {
 				return false;
 			}
 		}
+		return true;
+	}
+
+	public boolean spalte(int x, int y, int nummber) {
 		for (int i = 0; i < 9; i++) {
 			if (feld[x][i] == nummber) {
 				return false;
@@ -33,8 +37,9 @@ public class Autogenerate {
 		}
 		return true;
 	}
-	//HIER WIRD DAS DREIER FELD GETESTET
-	//Datt geht nicht so
+
+	// HIER WIRD DAS DREIER FELD GETESTET
+	// Datt geht nicht so
 	public boolean dreierfeld(int x, int y, int nummber) {
 		if (y < 6) {
 			if (y < 3) {
@@ -151,12 +156,19 @@ public class Autogenerate {
 		Random random = new Random();
 
 		List<Integer> l = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		for()
-		Collections.shuffle(l, random);
-		for (Integer integer : l) {
-			feld[x][y]
+		
+		if (x == 0) {
+			Collections.shuffle(l, random);
 		}
-
+		
+		if (dreierfeld(x, y, l.get(x))) {
+			if (spalte(x, y, l.get(x))) {
+				if (reihe(x, y, l.get(x))) {
+					feld[x][y] = l.get(x);
+					x++;
+				}
+			}
+		}
 		return false;
 	}
 
@@ -173,7 +185,7 @@ public class Autogenerate {
 				y = random.nextInt(9);
 			}
 			wert = random.nextInt(9) + 1;
-			if (reiheUSpalte(x, y, wert)) {
+			if (reihe(x, y, wert) && spalte(x, y, wert)) {
 				if (dreierfeld(x, y, wert)) {
 					feld[x][y] = wert;
 					soll++;
