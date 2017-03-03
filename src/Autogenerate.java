@@ -12,12 +12,12 @@ public class Autogenerate {
 	public Autogenerate(int wieViele) {
 		fuellen(wieViele);
 	}
-	//
+	//bsdf
 	// public Autogenerate() {
 	// reihenfuellen(0, 0);
 	// }
 
-	// Sollte auf zwei methoden geandert werden
+	
 	public boolean reiheUSpalte(int x, int y, int nummber) {
 		for (int i = 0; i < 9; i++) {
 			if (feld[i][y] == nummber) {
@@ -31,7 +31,7 @@ public class Autogenerate {
 		}
 		return true;
 	}
-	//HIER WIRD DAS DREIER FELD GETESTET
+	
 	public boolean dreierfeld(int x, int y, int nummber) {
 		if (y < 6) {
 			if (y < 3) {
@@ -123,18 +123,6 @@ public class Autogenerate {
 		return true;
 	}
 
-	public boolean feldfollvuellbar(int xanf, int yanf, int xend, int yend) {
-		for (; yanf < yend; yanf++) {
-			for (; xanf < xend; xanf++) {
-				if (feld[xanf][yanf] == 0) {
-					for (int i = 1; i <= 9; i++) {
-					}
-				}
-			}
-		}
-		return false;
-	}
-
 	public boolean reihenfuellen(int x, int y) {
 		if (y == 8 && x == 9) { // letzte zelle befuellt
 			return true;
@@ -148,36 +136,10 @@ public class Autogenerate {
 		Random random = new Random();
 
 		List<Integer> l = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-		Collections.shuffle(l, random);
+		int r = Collections.shuffle(l, random);
+		if(reiheUSpalte(x, y, r);
+		
 
-		int zaehler = 0;
-		int zaehlenbis = 500;
-		int wert = 0;
-
-		wert = random.nextInt(9 + 1);
-		if (reiheUSpalte(x, y, wert)) {
-			if (dreierfeld(x, y, wert)) {
-				feld[x][y] = wert;
-				soll++;
-				System.out.print(wert);
-			} else {
-				x--;
-			}
-		} else {
-			x--;
-			zaehler++;
-			if (x == 7 && zaehler > zaehlenbis) {
-				System.out.println();
-				System.out.println();
-				zaehler = 0;
-				for (int i = 0; i < 9; i++) {
-					feld[i][y] = 0;
-				}
-				x = 0;
-			}
-		}
-
-		ist++;
 		return false;
 	}
 
