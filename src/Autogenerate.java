@@ -8,6 +8,8 @@ public class Autogenerate {
 	private static int id;
 	private int ist;
 	private int soll;
+	private int x;
+	private int y;
 
 	public Autogenerate(int wieViele) {
 		fuellen(wieViele);
@@ -32,7 +34,7 @@ public class Autogenerate {
 		return true;
 	}
 	//HIER WIRD DAS DREIER FELD GETESTET
-	//Datt geht nicht so
+	//Datt geht so
 	public boolean dreierfeld(int x, int y, int nummber) {
 		if (y < 6) {
 			if (y < 3) {
@@ -136,7 +138,7 @@ public class Autogenerate {
 		return false;
 	}
 
-	public boolean reihenfuellen(int x, int y) {
+	public boolean reihenfuellen(int howMany) {
 		if (y == 8 && x == 9) { // letzte zelle befuellt
 			return true;
 		}
@@ -149,8 +151,11 @@ public class Autogenerate {
 		Random random = new Random();
 
 		List<Integer> l = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
+		for()
 		Collections.shuffle(l, random);
-
+		for (Integer integer : l) {
+			feld[x][y]
+		}
 
 		return false;
 	}
