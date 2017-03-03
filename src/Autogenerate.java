@@ -151,34 +151,7 @@ public class Autogenerate {
 		List<Integer> l = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
 		Collections.shuffle(l, random);
 
-		int zaehler = 0;
-		int zaehlenbis = 500;
-		int wert = 0;
 
-		wert = random.nextInt(9 + 1);
-		if (reiheUSpalte(x, y, wert)) {
-			if (dreierfeld(x, y, wert)) {
-				feld[x][y] = wert;
-				soll++;
-				System.out.print(wert);
-			} else {
-				x--;
-			}
-		} else {
-			x--;
-			zaehler++;
-			if (x == 7 && zaehler > zaehlenbis) {
-				System.out.println();
-				System.out.println();
-				zaehler = 0;
-				for (int i = 0; i < 9; i++) {
-					feld[i][y] = 0;
-				}
-				x = 0;
-			}
-		}
-
-		ist++;
 		return false;
 	}
 
