@@ -143,7 +143,7 @@ public class Autogenerate {
 		return false;
 	}
 
-	public boolean reihenfuellen(int howMany) {
+	public boolean reihenfuellen() {
 		if (y == 8 && x == 9) { // letzte zelle befuellt
 			return true;
 		}
@@ -168,7 +168,10 @@ public class Autogenerate {
 					x++;
 				}
 			}
+		} else {
+			Collections.shuffle(l, random);
 		}
+		reihenfuellen();
 		return false;
 	}
 
