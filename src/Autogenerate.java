@@ -34,7 +34,7 @@ public class Autogenerate {
 		return true;
 	}
 	//HIER WIRD DAS DREIER FELD GETESTET
-	//Datt geht so
+	//Datt geht nicht so
 	public boolean dreierfeld(int x, int y, int nummber) {
 		if (y < 6) {
 			if (y < 3) {
