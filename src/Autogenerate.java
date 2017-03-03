@@ -17,6 +17,7 @@ public class Autogenerate {
 	// reihenfuellen(0, 0);
 	// }
 
+	// Sollte auf zwei methoden geandert werden
 	public boolean reiheUSpalte(int x, int y, int nummber) {
 		for (int i = 0; i < 9; i++) {
 			if (feld[i][y] == nummber) {
