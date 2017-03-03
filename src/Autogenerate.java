@@ -8,6 +8,7 @@ public class Autogenerate {
 	private static int id;
 	private int ist;
 	private int soll;
+	private int z;
 
 	public Autogenerate(int wieViele) {
 		fuellen(wieViele);
