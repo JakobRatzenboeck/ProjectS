@@ -1,4 +1,5 @@
 package Model;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -6,6 +7,7 @@ import java.util.Random;
 
 public class Autogenerate {
 	private int feld[][] = new int[9][9];
+	private int falsch[][] = new int[9][3];
 	private static int Staticid;
 	private int id;
 	private int ist;
@@ -20,7 +22,7 @@ public class Autogenerate {
 		Staticid++;
 		fuellen(wieViele);
 	}
-	
+
 	public Autogenerate() {
 		setId(Staticid);
 		Staticid++;
@@ -42,9 +44,9 @@ public class Autogenerate {
 		this.id = id;
 	}
 
-	public boolean reihe(int x, int y, int nummber) {
+	public boolean reihe(int x, int y, int number) {
 		for (int i = 0; i < 9; i++) {
-			if (feld[i][y] == nummber) {
+			if (feld[i][y] == number) {
 				imwegx = i;
 				imwegy = y;
 				return false;
@@ -53,9 +55,9 @@ public class Autogenerate {
 		return true;
 	}
 
-	public boolean spalte(int x, int y, int nummber) {
+	public boolean spalte(int x, int y, int number) {
 		for (int i = 0; i < 9; i++) {
-			if (feld[x][i] == nummber) {
+			if (feld[x][i] == number) {
 				imwegx = x;
 				imwegy = i;
 				return false;
@@ -64,16 +66,14 @@ public class Autogenerate {
 		return true;
 	}
 
-	// HIER WIRD DAS DREIER FELD GETESTET
-	// Datt geht nicht so
-	public boolean dreierfeld(int x, int y, int nummber) {
+	public boolean dreierfeld(int x, int y, int number) {
 		if (y < 6) {
 			if (y < 3) {
 				if (x < 6) {
 					if (x < 3) {
 						for (int i = 0; i < 3; i++) {
 							for (int j = 0; j < 3; j++) {
-								if (feld[j][i] == nummber) {
+								if (feld[j][i] == number) {
 									return false;
 								}
 							}
@@ -81,7 +81,7 @@ public class Autogenerate {
 					} else {
 						for (int i = 0; i < 3; i++) {
 							for (int j = 3; j < 6; j++) {
-								if (feld[j][i] == nummber) {
+								if (feld[j][i] == number) {
 									return false;
 								}
 							}
@@ -90,7 +90,7 @@ public class Autogenerate {
 				} else {
 					for (int i = 0; i < 3; i++) {
 						for (int j = 6; j < 9; j++) {
-							if (feld[j][i] == nummber) {
+							if (feld[j][i] == number) {
 								return false;
 							}
 						}
@@ -101,7 +101,7 @@ public class Autogenerate {
 					if (x < 3) {
 						for (int i = 3; i < 6; i++) {
 							for (int j = 0; j < 3; j++) {
-								if (feld[j][i] == nummber) {
+								if (feld[j][i] == number) {
 									return false;
 								}
 							}
@@ -109,7 +109,7 @@ public class Autogenerate {
 					} else {
 						for (int i = 3; i < 6; i++) {
 							for (int j = 3; j < 6; j++) {
-								if (feld[j][i] == nummber) {
+								if (feld[j][i] == number) {
 									return false;
 								}
 							}
@@ -118,7 +118,7 @@ public class Autogenerate {
 				} else {
 					for (int i = 3; i < 6; i++) {
 						for (int j = 6; j < 9; j++) {
-							if (feld[j][i] == nummber) {
+							if (feld[j][i] == number) {
 								return false;
 							}
 						}
@@ -130,7 +130,7 @@ public class Autogenerate {
 				if (x < 3) {
 					for (int i = 6; i < 9; i++) {
 						for (int j = 0; j < 3; j++) {
-							if (feld[j][i] == nummber) {
+							if (feld[j][i] == number) {
 								return false;
 							}
 						}
@@ -138,7 +138,7 @@ public class Autogenerate {
 				} else {
 					for (int i = 6; i < 9; i++) {
 						for (int j = 3; j < 6; j++) {
-							if (feld[j][i] == nummber) {
+							if (feld[j][i] == number) {
 								return false;
 							}
 						}
@@ -147,7 +147,7 @@ public class Autogenerate {
 			} else {
 				for (int i = 6; i < 9; i++) {
 					for (int j = 6; j < 9; j++) {
-						if (feld[j][i] == nummber) {
+						if (feld[j][i] == number) {
 							return false;
 						}
 					}
@@ -157,16 +157,52 @@ public class Autogenerate {
 		return true;
 	}
 
-	public boolean feldfollvuellbar(int xanf, int yanf, int xend, int yend) {
-		for (; yanf < yend; yanf++) {
-			for (; xanf < xend; xanf++) {
-				if (feld[xanf][yanf] == 0) {
-					for (int i = 1; i <= 9; i++) {
+	public int[][] dreierfeld(int x, int y) {
+		int newx = 0;
+		int newy = 0;
+		if (x >= 0 && x <= 2) {
+			newx = 0;
+		}
+		if (x >= 3 && x <= 5) {
+			newx = 3;
+		}
+		if (x >= 6 && x < 8) {
+			newx = 6;
+		}
+		if (y >= 0 && y <= 2) {
+			newy = 0;
+		}
+		if (y >= 3 && y <= 5) {
+			newy = 3;
+		}
+		if (y >= 6 && y < 8) {
+			newy = 6;
+		}
+		for (int i = newy; i < newy + 2; i++) {
+			for (int j = newx; j < newx + 2; j++) {
+				if (feld[j][i] == feld[y][x]) {
+					if (i != y && j != x) {
+						for (int c = 0; c < 9; c++) {
+							if (falsch[c][0] != feld[x][y]) {
+								falsch[i][0] = feld[x][y];
+								falsch[i][1] = x;
+								falsch[i][2] = y;
+							}
+						}
 					}
 				}
 			}
 		}
-		return false;
+		for (int i = 0; i <= y; i++) {
+			for (int j = newx; j < newx + 2; j++) {
+				if (feld[j][i] == feld[y][x]) {
+					if (i != y && j != x) {
+						
+					}
+				}
+			}
+		}
+		return falsch;
 	}
 
 	public boolean reihenfuellen() {
@@ -195,12 +231,19 @@ public class Autogenerate {
 				} else {
 					Collections.shuffle(l, random);
 				}
-			} else {
-				//Backtracking
+			} else
+
+			{
+				// Backtracking
 			}
 		} else {
-			//Backtracking
+			// Backtracking
 			Collections.shuffle(l, random);
+		}
+		for(int i = 0; i < 9;i++) {
+		if (dreierfeld(i, y) == null) {
+
+		}
 		}
 		reihenfuellen();
 		return false;
@@ -220,14 +263,14 @@ public class Autogenerate {
 			}
 			wert = random.nextInt(9) + 1;
 			if (reihe(x, y, wert) && spalte(x, y, wert)) {
-//				if (dreierfeld(x, y, wert)) {
+				if (dreierfeld(x, y, wert)) {
 					feld[x][y] = wert;
 					soll++;
 					System.out.println(soll + ".: feld[" + x + "][" + y + "]" + wert);
-//				}
-					if(ist>=81) {
-						print();
-					}
+				}
+				if (ist >= 81) {
+					print();
+				}
 			}
 			ist++;
 		}
@@ -269,13 +312,13 @@ public class Autogenerate {
 	}
 
 	public static void main(String[] args) {
-		Autogenerate ag = new Autogenerate(81);
+		Autogenerate ag = new Autogenerate(54);
 		ag.print();
 		System.out.println();
 		System.out.println();
 		System.out.println();
-		//
-		// Autogenerate agwithrows = new Autogenerate();
-		// agwithrows.print();
+
+		Autogenerate agwithrows = new Autogenerate();
+		agwithrows.print();
 	}
 }
