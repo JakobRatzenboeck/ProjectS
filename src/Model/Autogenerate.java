@@ -66,6 +66,47 @@ public class Autogenerate {
 		return true;
 	}
 
+	public boolean notfinished() {
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				if (i == 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public boolean backtracking() {
+		Random random = new Random();
+		int wert = 0;
+		if (notfinished()) {
+			wert = random.nextInt(8) + 1;
+		}
+		// if (grid is empty) {
+		// assign the empty grid with values (i)
+		// if (no numbers exists in same rows & same columns same as (i) & 3x3
+		// square (i) is currently in)
+		// fill in the number
+		// if (numbers exists in same rows | same columns same as (i) | 3x3
+		// square (i) is currently in)
+		// discard (i) and repick other values (i++)
+		// }
+		// else {
+		// while (nx < 9) {
+		// Proceed to next row grid(nx++, ny)
+		// if (nx equals 9) {
+		// reset nx = 1
+		// proceed to next column grid(nx,ny++)
+		// if (ny equals 9) {
+		// print solution
+		// }
+		// }
+		// }
+		// }
+		return true;
+	}
+
 	public boolean dreierfeld(int x, int y, int number) {
 		if (y < 6) {
 			if (y < 3) {
@@ -197,7 +238,7 @@ public class Autogenerate {
 			for (int j = newx; j < newx + 2; j++) {
 				if (feld[j][i] == feld[y][x]) {
 					if (i != y && j != x) {
-						
+
 					}
 				}
 			}
@@ -240,10 +281,10 @@ public class Autogenerate {
 			// Backtracking
 			Collections.shuffle(l, random);
 		}
-		for(int i = 0; i < 9;i++) {
-		if (dreierfeld(i, y) == null) {
+		for (int i = 0; i < 9; i++) {
+			if (dreierfeld(i, y) == null) {
 
-		}
+			}
 		}
 		reihenfuellen();
 		return false;
@@ -255,11 +296,11 @@ public class Autogenerate {
 		int y = 0;
 		int wert = 0;
 		while (soll != wieViele) {
-			x = random.nextInt(9);
-			y = random.nextInt(9);
+			x = random.nextInt(8) + 1;
+			y = random.nextInt(8) + 1;
 			while (feld[x][y] != 0) {
-				x = random.nextInt(9);
-				y = random.nextInt(9);
+				x = random.nextInt(8) + 1;
+				y = random.nextInt(8) + 1;
 			}
 			wert = random.nextInt(9) + 1;
 			if (reihe(x, y, wert) && spalte(x, y, wert)) {
@@ -312,13 +353,17 @@ public class Autogenerate {
 	}
 
 	public static void main(String[] args) {
-		Autogenerate ag = new Autogenerate(54);
-		ag.print();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-
-		Autogenerate agwithrows = new Autogenerate();
-		agwithrows.print();
+		// Autogenerate ag = new Autogenerate(54);
+		// ag.print();
+		// System.out.println();
+		// System.out.println();
+		// System.out.println();
+		//
+		// Autogenerate agwithrows = new Autogenerate();
+		// agwithrows.print();
+		Random random = new Random();
+		while (true) {
+			System.out.println(random.nextInt(9));
+		}
 	}
 }
