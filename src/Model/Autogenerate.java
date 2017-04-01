@@ -15,7 +15,7 @@ public class Autogenerate {
 	public Autogenerate(int wieViele) {
 		setId(Staticid);
 		Staticid++;
-		fuellen(wieViele);
+		bereiten(wieViele);
 	}
 
 	public Autogenerate() {
@@ -168,14 +168,14 @@ public class Autogenerate {
 		return false;
 	}
 
-	public void fuellen(int wieViele) {
+	public void bereiten(int wieViele) {
 		fertigesfeld = feld;
 		backtracking();
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				feld[i][j] = 0;
-			}
-		}
+//		for (int i = 0; i < 9; i++) {
+//			for (int j = 0; j < 9; j++) {
+//				feld[i][j] = 0;
+//			}
+//		}
 //		Random random = new Random();
 //		int howmany1 = wieViele / 9;
 //		int x = 0;
@@ -228,7 +228,7 @@ public class Autogenerate {
 	public static void main(String[] args) {
 		Autogenerate ag = new Autogenerate();
 
-		ag.fuellen(10);
+		ag.bereiten(10);
 		ag.print();
 	}
 }
