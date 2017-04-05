@@ -7,8 +7,6 @@ public class Autogenerate {
 	private int feld[][] = new int[9][9];
 	private static int Staticid;
 	private int id;
-	private int ist;
-	private int soll;
 	private int x = 0;
 	private int y = 0;
 
@@ -18,15 +16,42 @@ public class Autogenerate {
 		bereiten(wieViele);
 	}
 
-	public Autogenerate() {
-		setId(Staticid);
-		Staticid++;
+	/**
+	 * @return the fertigesfeld
+	 */
+	public int[][] getFertigesfeld() {
+		return fertigesfeld;
 	}
+	
+
+
+
+	/**
+	 * @param fertigesfeld the fertigesfeld to set
+	 */
+	public void setFertigesfeld(int x, int y, int number) {
+		if(fertigesfeld[x][y]!=0 && number<=9) {
+			fertigesfeld[x][y] = number;
+		}
+	}
+	
+
+
+
+	/**
+	 * @return the feld
+	 */
+	public int[][] getFeld() {
+		return feld;
+	}
+	
+
+
 
 	/**
 	 * @return the id
 	 */
-	private int getId() {
+	public int getId() {
 		return id;
 	}
 
@@ -71,9 +96,10 @@ public class Autogenerate {
 		Random random = new Random();
 		int oldx = x;
 		int oldy = y;
+		// ob es noch nicht fertig ist
 		if (notfinished()) {
 			int wert = random.nextInt(8) + 1;
-
+			// pro zahl 0-8
 			for (int versuch = 0; versuch < 9; ++versuch) {
 				if (dreierfeld(x, y, wert) && reihe(x, y, wert) == true && spalte(x, y, wert)) {
 					feld[x][y] = wert;
@@ -108,6 +134,7 @@ public class Autogenerate {
 	public boolean dreierfeld(int x, int y, int number) {
 		int newx = 0;
 		int newy = 0;
+		// Setzt kordinaten auf den beginn eines Drei mal Drei feldes
 		if (x >= 0 && x <= 2) {
 			newx = 0;
 		}
@@ -127,6 +154,7 @@ public class Autogenerate {
 		if (y >= 6 && y <= 8) {
 			newy = 6;
 		}
+		// Prüft das drei aml drei feld ab
 		for (int i = newy; i < newy + 3; i++) {
 			for (int j = newx; j < newx + 3; j++) {
 				if (feld[j][i] == number) {
@@ -169,32 +197,22 @@ public class Autogenerate {
 	}
 
 	public void bereiten(int wieViele) {
-		fertigesfeld = feld;
 		backtracking();
-//		for (int i = 0; i < 9; i++) {
-//			for (int j = 0; j < 9; j++) {
-//				feld[i][j] = 0;
-//			}
-//		}
-//		Random random = new Random();
-//		int howmany1 = wieViele / 9;
-//		int x = 0;
-//		int y = 0;
-//		while (soll != wieViele) {
-//			x = random.nextInt(2);
-//			y = random.nextInt(2);
-//			if (feld[x][y] == 0) {
-//				while (feld[x][y] == 0) {
-//					x = random.nextInt(2);
-//					y = random.nextInt(2);
-//				}
-//			} else {
-//				if (minifeldNL(x, y)) {
-//					feld[x][y] = 0;
-//					soll++;
-//				}
-//			}
-//		}
+		Random random = new Random();
+		fertigesfeld = feld;
+		for(int soll = 0;soll < wieViele;){
+			y = random.nextInt(9);
+			x = random.nextInt(9);
+			if(minifeldNL(x, y)) {
+				int i =fertigesfeld[x][y];
+				fertigesfeld[x][y] = 0;
+				if(!minifeldNL(x, y)) {
+					fertigesfeld[x][y] = i;
+				} else {
+					++soll;
+				}
+			}
+		}
 	}
 
 	public void print() {
@@ -206,10 +224,10 @@ public class Autogenerate {
 				} else {
 					System.out.print(" ║ ");
 				}
-				if (feld[j][i] == 0) {
+				if (fertigesfeld[j][i] == 0) {
 					System.out.print(" ");
 				} else {
-					System.out.print(feld[j][i]);
+					System.out.print(fertigesfeld[j][i]);
 				}
 			}
 			System.out.println(" ║");
@@ -221,14 +239,10 @@ public class Autogenerate {
 			}
 		}
 		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
-		System.out.println("Soll: " + soll);
-		System.out.println("Ist: " + ist);
 	}
 
 	public static void main(String[] args) {
-		Autogenerate ag = new Autogenerate();
-
-		ag.bereiten(10);
+		Autogenerate ag = new Autogenerate(64);
 		ag.print();
 	}
 }
