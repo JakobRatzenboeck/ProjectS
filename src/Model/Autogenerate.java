@@ -16,27 +16,27 @@ public class Autogenerate {
 		bereiten(wieViele);
 	}
 
+	public Autogenerate(int spiel[][]) {
+		if (spiel != null)
+			fertigesfeld = spiel;
+	}
+
 	/**
 	 * @return the fertigesfeld
 	 */
 	public int[][] getFertigesfeld() {
 		return fertigesfeld;
 	}
-	
-
-
 
 	/**
-	 * @param fertigesfeld the fertigesfeld to set
+	 * @param fertigesfeld
+	 *            the fertigesfeld to set
 	 */
 	public void setFertigesfeld(int x, int y, int number) {
-		if(fertigesfeld[x][y]!=0 && number<=9) {
+		if (fertigesfeld[x][y] != 0 && number <= 9) {
 			fertigesfeld[x][y] = number;
 		}
 	}
-	
-
-
 
 	/**
 	 * @return the feld
@@ -44,9 +44,6 @@ public class Autogenerate {
 	public int[][] getFeld() {
 		return feld;
 	}
-	
-
-
 
 	/**
 	 * @return the id
@@ -200,13 +197,13 @@ public class Autogenerate {
 		backtracking();
 		Random random = new Random();
 		fertigesfeld = feld;
-		for(int soll = 0;soll < wieViele;){
+		for (int soll = 0; soll < wieViele;) {
 			y = random.nextInt(9);
 			x = random.nextInt(9);
-			if(minifeldNL(x, y)) {
-				int i =fertigesfeld[x][y];
+			if (minifeldNL(x, y)) {
+				int i = fertigesfeld[x][y];
 				fertigesfeld[x][y] = 0;
-				if(!minifeldNL(x, y)) {
+				if (!minifeldNL(x, y)) {
 					fertigesfeld[x][y] = i;
 				} else {
 					++soll;
