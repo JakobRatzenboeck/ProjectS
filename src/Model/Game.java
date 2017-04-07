@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.DosFileAttributes;
 
 public class Game {
 	Autogenerate ag;
@@ -41,11 +43,13 @@ public class Game {
 		DataInputStream disl = new DataInputStream(new FileInputStream(name + "_l.dat"));
 		try {
 			while (true) {
+				
 				fertigesfeld[dis.readByte()][dis.readByte()] = dis.readByte();
 				fertigesfeld[disl.readByte()][disl.readByte()] = disl.readByte();
 			}
 		} catch (EOFException exc) {
 			dis.close();
+			disl.close();
 		}
 	}
 
@@ -60,6 +64,7 @@ public class Game {
 			}
 		}
 		DataOutputStream dosl = new DataOutputStream(new FileOutputStream(new File(ag.getId() + "_l.dat")));
+
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
 				dosl.writeByte(j);
@@ -94,8 +99,6 @@ public class Game {
 		}
 		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
 	}
-	
-	
 
 	/**
 	 * @return the fertigesfeld
@@ -105,7 +108,8 @@ public class Game {
 	}
 
 	/**
-	 * @param fertigesfeld the fertigesfeld to set
+	 * @param fertigesfeld
+	 *            the fertigesfeld to set
 	 */
 	private void setFertigesfeld(int[][] fertigesfeld) {
 		this.fertigesfeld = fertigesfeld;
@@ -119,7 +123,8 @@ public class Game {
 	}
 
 	/**
-	 * @param feld the feld to set
+	 * @param feld
+	 *            the feld to set
 	 */
 	private void setFeld(int[][] feld) {
 		this.feld = feld;
