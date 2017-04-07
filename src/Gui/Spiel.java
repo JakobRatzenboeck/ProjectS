@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 
-public class Game extends Application {
+public class Spiel extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
