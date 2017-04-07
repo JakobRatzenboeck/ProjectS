@@ -40,6 +40,8 @@ public class Main extends Application {
 			
 			end.setOnAction(ActionEvent -> Platform.exit());
 			
+			
+			
 			credits.setOnAction(new EventHandler<ActionEvent>() {
 
 
@@ -82,7 +84,7 @@ public class Main extends Application {
 			
 			VBox boxbottom = new VBox(website,credits);
 			VBox box  = new VBox ();
-
+			
 			
 			box.getChildren().addAll( start,settings,end);
 			root.setLeft(box);
