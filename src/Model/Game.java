@@ -94,6 +94,36 @@ public class Game {
 		}
 		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
 	}
+	
+	
+
+	/**
+	 * @return the fertigesfeld
+	 */
+	private int[][] getFertigesfeld() {
+		return fertigesfeld;
+	}
+
+	/**
+	 * @param fertigesfeld the fertigesfeld to set
+	 */
+	private void setFertigesfeld(int[][] fertigesfeld) {
+		this.fertigesfeld = fertigesfeld;
+	}
+
+	/**
+	 * @return the feld
+	 */
+	private int[][] getFeld() {
+		return feld;
+	}
+
+	/**
+	 * @param feld the feld to set
+	 */
+	private void setFeld(int[][] feld) {
+		this.feld = feld;
+	}
 
 	public static void main(String[] args) {
 		Game ag = new Game(40);
