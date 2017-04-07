@@ -1,5 +1,6 @@
 package Gui;
 
+import Model.Game;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -21,19 +22,45 @@ public class Spiel extends Application {
 		try {
 			
 			
+			//HIER DEN SCHWIERIGKEITSGRAD AUSWÄHLBAR MACHEN
+			int p = 10;
+			
+			
+			
+			
+			
+			
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root,400,400);
 			primaryStage.setTitle("SUDOKU");
+			 Game x = new Game(p);
+			 int[][] sudokuroh = new int[9][9];
+			 sudokuroh = x.getFertigesfeld();
 			
-			 Object[] sudoku = new Object[9][9];
-			int x = 0;
-			int y = 0;
-			int z = 0;
+			 
+			 
+			 Object[][] sudoku = new Object[9][9];
+			 
+			 
+			int b = 0;
+			int c = 0;
+			int z = sudokuroh[b][c];
+			int helfer = -1;
 			
 			
 			for(int i = 0;i < 81; i++)
 			{
 				Button a = new Button("" + z);
+				sudoku[b][c] = a;
+				
+				if(helfer >0)
+				{
+					b++;
+				}
+				else
+				{
+					c++;
+				}
 				
 				
 			}

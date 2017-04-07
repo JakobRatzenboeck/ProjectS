@@ -100,7 +100,7 @@ public class Game {
 	/**
 	 * @return the fertigesfeld
 	 */
-	private int[][] getFertigesfeld() {
+	public int[][] getFertigesfeld() {
 		return fertigesfeld;
 	}
 
