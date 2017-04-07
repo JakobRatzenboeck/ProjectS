@@ -238,8 +238,8 @@ public class Autogenerate {
 		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
 	}
 
-	public static void main(String[] args) {
-		Autogenerate ag = new Autogenerate(64);
-		ag.print();
-	}
+//	public static void main(String[] args) {
+//		Autogenerate ag = new Autogenerate(64);
+//		ag.print();
+//	}
 }
