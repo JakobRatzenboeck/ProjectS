@@ -15,7 +15,7 @@ public class Game {
 	Autogenerate ag;
 	private int fertigesfeld[][];
 	private int feld[][];
-
+	
 	public Game(File source) {
 		try {
 			load(source);

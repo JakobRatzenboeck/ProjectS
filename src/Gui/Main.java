@@ -38,16 +38,12 @@ public class Main extends Application {
 			Button credits = new Button("Credits");
 			Button website = new Button("Website");
 			Button settings = new Button("Settings");
-			Button help = new Button("?");
+		
 			
-			help.setTextFill(Color.WHITE);
-			help.setStyle("-fx-background-radius: 20em; " + "-fx-min-width: 23px; " + "-fx-min-height: 23px; "
-					+ "-fx-max-width: 23px; " + "-fx-max-height: 23px; " + "-fx-background-color: lightblue; ");
-
 			
 			end.setOnAction(ActionEvent -> Platform.exit());
-			
-			
+			Spiel s = new Spiel();
+			start.setOnAction(ActionEvent -> s.start(primaryStage));
 			
 			credits.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -85,14 +81,13 @@ public class Main extends Application {
 			//website.setTranslateY(-30);
 			top.setTranslateY(20);
 			top.setTranslateX(140);
-			help.setTranslateY(-30);
-			help.setTranslateX(370);
+		
 			
 			
 			
 			VBox boxbottom = new VBox(website,credits);
 			VBox box  = new VBox ();
-			VBox boxtop = new VBox(top, help);
+			VBox boxtop = new VBox(top);
 			
 			
 			box.getChildren().addAll( start,settings,end);
