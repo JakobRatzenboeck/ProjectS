@@ -5,20 +5,18 @@ import java.util.Random;
 public class Autogenerate {
 	private int fertigesfeld[][] = new int[9][9];
 	private int feld[][] = new int[9][9];
-	private static int Staticid;
-	private int id;
 	private int x = 0;
 	private int y = 0;
 
 	public Autogenerate(int wieViele) {
-		setId(Staticid);
-		Staticid++;
 		bereiten(wieViele);
 	}
 
-	public Autogenerate(int spiel[][]) {
+	public Autogenerate(int spiel[][], int loesung[][]) {
 		if (spiel != null)
 			fertigesfeld = spiel;
+		if (loesung != null)
+			feld = loesung;
 	}
 
 	/**
@@ -43,21 +41,6 @@ public class Autogenerate {
 	 */
 	public int[][] getFeld() {
 		return feld;
-	}
-
-	/**
-	 * @return the id
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            the id to set
-	 */
-	private void setId(int id) {
-		this.id = id;
 	}
 
 	public boolean reihe(int x, int y, int number) {
@@ -238,8 +221,8 @@ public class Autogenerate {
 		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
 	}
 
-//	public static void main(String[] args) {
-//		Autogenerate ag = new Autogenerate(64);
-//		ag.print();
-//	}
+	// public static void main(String[] args) {
+	// Autogenerate ag = new Autogenerate(64);
+	// ag.print();
+	// }
 }
