@@ -9,23 +9,25 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public class Game {
 	Autogenerate ag;
 	private int fertigesfeld[][] = new int[9][9];
 	private int feld[][] = new int[9][9];
 	private boolean[][] anfang = new boolean[9][9];
-	private static int Staticid = 0;
-	private int id = 0;
+	private String id = "";
 
 	// Ein nicht Fertiges Spiel abschliesen
 	public Game(File source) {
-		id = Staticid + 1;
-		setId(id);
 		try {
 			load(source);
 		} catch (IOException e) {
@@ -33,14 +35,11 @@ public class Game {
 			e.printStackTrace();
 		}
 		ag = new Autogenerate(fertigesfeld, feld);
-		setFertigesfeld(fertigesfeld);
-		setFeld(feld);
 	}
 
 	// Neues Spiel
 	public Game(int schwierigkeitsgrad) {
-		id = Staticid + 1;
-		setId(id);
+		setId();
 		ag = new Autogenerate(schwierigkeitsgrad);
 		setFeld(ag.getFeld());
 		setFertigesfeld(ag.getFertigesfeld());
@@ -53,18 +52,13 @@ public class Game {
 		}
 	}
 
-	/*
-	 * SetId
-	 */
-	private void setId(int staticid) {
-		this.id = staticid;
-
+	public void setId() {
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		LocalDate localDate = LocalDate.now();
+		id = dtf.format(localDate);
 	}
 
-	/*
-	 * GetId
-	 */
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -72,6 +66,33 @@ public class Game {
 	public void zug(int x, int y, int move) {
 		if (ag.dreierfeld(x, y, move) && ag.reihe(x, y, move) && ag.spalte(x, y, move)) {
 			ag.setFertigesfeld(x, y, move);
+		}
+	}
+
+	public boolean notfinished() {
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				if (fertigesfeld[j][i] == 0) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public void fertig() {
+		if (notfinished()) {
+			String path = "savedGames/" + getId() + "_Sudoku.dat";
+			try {
+				Files.delete(Paths.get(path));
+			} catch (NoSuchFileException x) {
+				System.err.format("%s: no such" + " file or directory%n", path);
+			} catch (DirectoryNotEmptyException x) {
+				System.err.format("%s not empty%n", path);
+			} catch (IOException x) {
+				// File permission problems are caught here.
+				System.err.println(x);
+			}
 		}
 	}
 
@@ -86,21 +107,30 @@ public class Game {
 	public void load(File source) throws IOException {
 		DataInputStream dis = new DataInputStream(new FileInputStream(source));
 		try {
-			for (int i = 0; i > 81; ++i) {
-				fertigesfeld[dis.readInt()][dis.readInt()] = dis.readInt();
+			for (int i = 0; i < 81; ++i) {
+				int x = dis.readInt();
+				int y = dis.readInt();
+				int wert = dis.readInt();
+				fertigesfeld[x][y] = wert;
 			}
-			for (int i = 0; i > 81; ++i) {
-				feld[dis.readInt()][dis.readInt()] = dis.readInt();
+			for (int i = 0; i < 81; ++i) {
+				int x = dis.readInt();
+				int y = dis.readInt();
+				int wert = dis.readInt();
+				feld[x][y] = wert;
 			}
-			for (int i = 0; i > 81; ++i) {
-				anfang[dis.readInt()][dis.readInt()] = dis.readBoolean();
+			for (int i = 0; i < 81; ++i) {
+				int x = dis.readInt();
+				int y = dis.readInt();
+				boolean wert = dis.readBoolean();
+				anfang[x][y] = wert;
 			}
 		} catch (EOFException exc) {
 			dis.close();
 		}
 	}
 
-	// speichern beider Arrays
+	// speichern aller Arrays
 	public void save() throws IOException {
 		feld = ag.getFeld();
 		String path = "savedGames/" + getId() + "_Sudoku.dat";
@@ -204,22 +234,25 @@ public class Game {
 		this.feld = feld;
 	}
 
+	/**
+	 * @return the feld
+	 */
+	private boolean[][] getAnfang() {
+		return anfang;
+	}
+
 	public static void main(String[] args) throws IOException {
 		Game ag = new Game(40);
 		ag.print();
 		Game ag1 = new Game(9);
 		try {
 			ag1.save();
-			System.out.println("Saved");
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ag1.print();
-		System.out.println(new Game(new File("savedGames/1_Sudoku.dat")));
-		Game ag2 = new Game(new File("savedGames/1_Sudoku.dat"));
-		ag2.load(new File("savedGames/1_Sudoku.dat"));
+		Game ag2 = new Game(new File("savedGames/21.04.2017_Sudoku.dat"));
 		ag2.print();
 	}
 }
