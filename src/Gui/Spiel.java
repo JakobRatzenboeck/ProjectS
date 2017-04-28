@@ -1,5 +1,7 @@
 package Gui;
 
+import java.util.Random;
+
 import Model.Game;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -22,52 +24,67 @@ public class Spiel extends Application {
 		try {
 			
 			
-			//HIER DEN SCHWIERIGKEITSGRAD AUSWÄHLBAR MACHEN
-			int p = 10;
+			ThefinalGame hallo = new ThefinalGame();
 			
-			
-			
-			
-			
+			Random r = new Random();
+			int q=r.nextInt(22)   +9 ;
+			System.out.println(q);
+			int m = r.nextInt(11) +31;
+			int h = r.nextInt(22) + 42;
+			System.out.println(m + "     " + h);
+			hallo.setE(q);
+			hallo.setM(m);
+			hallo.setH(h);
 			
 			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,400,400);
-			primaryStage.setTitle("SUDOKU");
-			 Game x = new Game(p);
-			 int[][] sudokuroh = new int[9][9];
-			 sudokuroh = x.getFertigesfeld();
+			Scene scene = new Scene(root,600,200);
+			primaryStage.setTitle("SUDOKU GAME");
 			
-			 
-			 
-			 Object[][] sudoku = new Object[9][9];
-			 
-			 
-			int b = 0;
-			int c = 0;
-			int z = sudokuroh[b][c];
-			int helfer = -1;
+			Button easy = new Button("Einfach");
+			Button normal = new Button("Normal");
+			Button hard = new Button("Schwer");
+			Button load = new Button("Spiel Laden");
+			Button choose = new Button("EntwicklerModus");
 			
 			
-			for(int i = 0;i < 81; i++)
-			{
-				Button a = new Button("" + z);
-				sudoku[b][c] = a;
-				
-				if(helfer >0)
-				{
-					b++;
-				}
-				else
-				{
-					c++;
-				}
-				
-				
-			}
+			VBox oben = new VBox(easy,normal,hard);
+			VBox unten = new VBox(load,choose)	;		
+			easy.setMaxSize(90, 20);
+			easy.setTranslateX(100);
+			easy.setTranslateY(40);
+			
+			
+			easy.setOnAction(ActionEvent -> hallo.start(primaryStage));
+			
+			
+			
+			
+			
+			
+			
+			normal.setMaxSize(90, 20);
+			normal.setTranslateX(250);
+			normal.setTranslateY(10);
+			
+			hard.setMaxSize(90, 20);
+			hard.setTranslateX(400);
+			hard.setTranslateY(-21);
+			
+			load.setMaxSize(210, 20);
+			load.setTranslateX(190);
+			load.setTranslateY(-40);
+			
+			
+			root.setTop(oben);
+			root.setBottom(unten);
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
+			
+			
+			
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
