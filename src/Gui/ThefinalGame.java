@@ -25,7 +25,7 @@ public class ThefinalGame extends Application {
 		try {
 
 			// HIER DEN SCHWIERIGKEITSGRAD AUSWÄHLBAR MACHEN
-
+			//hallo liebe grüße ich bin im spiel
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root, 600, 800);
 			primaryStage.setTitle("SUDOKU GAME");
