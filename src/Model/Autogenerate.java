@@ -180,17 +180,21 @@ public class Autogenerate {
 		backtracking();
 		Random random = new Random();
 		fertigesfeld = feld;
-		for (int soll = 0; soll < wieViele;) {
+		for (int soll = 0; soll < wieViele; soll++) {
 			y = random.nextInt(9);
 			x = random.nextInt(9);
-			if (minifeldNL(x, y)) {
-				int i = fertigesfeld[x][y];
-				fertigesfeld[x][y] = 0;
-				if (!minifeldNL(x, y)) {
-					fertigesfeld[x][y] = i;
+			if (fertigesfeld[x][y] != 0) {
+				if (minifeldNL(x, y)) {
+					int i = fertigesfeld[x][y];
+					fertigesfeld[x][y] = 0;
+					if (!minifeldNL(x, y)) {
+						fertigesfeld[x][y] = i;
+					}
 				} else {
-					++soll;
+					soll--;
 				}
+			} else {
+				soll--;
 			}
 		}
 	}
