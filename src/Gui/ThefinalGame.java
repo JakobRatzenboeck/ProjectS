@@ -27,19 +27,30 @@ public class ThefinalGame extends Application {
 			// HIER DEN SCHWIERIGKEITSGRAD AUSWÄHLBAR MACHEN
 
 			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root, 600, 300);
+			Scene scene = new Scene(root, 600, 800);
 			primaryStage.setTitle("SUDOKU GAME");
 
 			FlowPane game = new FlowPane();
-			game.setPrefSize(454, 454);
+			game.setMaxSize(454, 454);
+			game.setMinSize(454, 454);
 			game.setStyle("-fx-background-color: #000000");
-
+			primaryStage.setMaxHeight(800);
+			primaryStage.setMaxWidth(600);
+			primaryStage.setMinHeight(800);
+			primaryStage.setMinWidth(600);
+			
+			
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 9; j++) {
-					buttons[j][i] = new Button();
+					Button z = new Button();
+					
+					buttons[j][i] = z;
 					buttons[j][i].setPrefSize(50, 50);
 					game.getChildren().add(buttons[j][i]);
-
+					
+					
+					
+					
 					if (j == 2 || j == 5) {
 						FlowPane.setMargin(buttons[j][i], new Insets(0, 2, 0, 0));
 						if (i == 2 || i == 5) {
@@ -55,8 +66,16 @@ public class ThefinalGame extends Application {
 				}
 			}
 
+			
+			
+			
+			
 			VBox box = new VBox(game);
 
+			box.setMargin(game,	new Insets(50,66,30,66));
+			
+			
+			
 			root.setCenter(box);
 
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

@@ -3,6 +3,11 @@ package Gui;
 
 
 
+import java.awt.Desktop;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -56,7 +61,53 @@ public class Main extends Application {
 
 				}
 			});
+			
+			
+			settings.setOnAction(new EventHandler<ActionEvent>() {
 
+
+				public void handle(ActionEvent event) {
+					Alert info = new Alert(AlertType.INFORMATION);
+					info.setTitle("JJ Games and more");
+					info.setContentText("Nur in der Vollversion verfügbar, kostet 9,99€");
+					info.show();
+
+				}
+			});
+			
+			website.setOnAction(new EventHandler<ActionEvent>() {
+
+
+				public void handle(ActionEvent event) {
+
+					 String location = new File("src/Web/Sudoku.html").toURI().toString();
+				        
+				        Desktop desktop = Desktop.getDesktop();
+
+				        // Adresse mit Standardbrowser anzeigen
+				        URI uri;
+				        try
+				        {
+				            uri = new URI(location);
+				            desktop.browse(uri);
+				        } catch (Exception oError)
+				        {
+				            // Hier Fehler abfangen
+				            System.out.println("Seite kann nicht geöffnet werden.");
+				        }
+
+				
+					
+					
+					
+					
+					
+					
+					
+					
+				}
+			});
+			
 
 		//	credits.setOnAction(value);
 			

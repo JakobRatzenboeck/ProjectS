@@ -53,8 +53,8 @@ public class Spiel extends Application {
 			
 			
 			easy.setOnAction(ActionEvent -> hallo.start(primaryStage));
-			
-			
+			normal.setOnAction(ActionEvent -> hallo.start(primaryStage));
+			hard.setOnAction(ActionEvent -> hallo.start(primaryStage));
 			
 			
 			
