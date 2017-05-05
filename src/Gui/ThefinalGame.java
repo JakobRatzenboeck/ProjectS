@@ -1,20 +1,24 @@
 package Gui;
 
+import Model.Game;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class ThefinalGame extends Application {
 
 	
-		int e = 0;
+		int x = 0;
 		int m = 0;
 		int h = 0;
+		
 		String s ="";
-	
-	
+		private Button[][] buttons = new Button[9][9];
+		private Game gm = new Game(x);
 		
 	
 	
@@ -24,7 +28,8 @@ public class ThefinalGame extends Application {
 				
 				
 				//HIER DEN SCHWIERIGKEITSGRAD AUSWÄHLBAR MACHEN
-			
+				
+				
 				
 				
 				
@@ -34,9 +39,25 @@ public class ThefinalGame extends Application {
 				Scene scene = new Scene(root,600,300);
 				primaryStage.setTitle("SUDOKU GAME");
 				
-			
+
+				FlowPane game  = new FlowPane();
+				game.setPrefSize(454, 454);
+				game.setStyle("-fx-background-color: #000000");
+				
+					for (int i = 0; i < 9; i++) {
+						
+						for (int j = 0; j < 9; j++) {
+							buttons[j][i] = new Button();
+							buttons[j][i].setPrefSize(50, 50);
+							game.getChildren().add(buttons[j][i]);
+						}
+					}
+					
+				
+					VBox box = new VBox(game);
 				
 				
+				root.setCenter(box);
 				
 				
 				
@@ -108,96 +129,31 @@ public class ThefinalGame extends Application {
 
 
 
-		/**
-		 * @return the e
-		 */
-		public int getE() {
-			return e;
-		}
+		
 
 
 
 
 
 
-		/**
-		 * @return the m
-		 */
-		public int getM() {
-			return m;
-		}
+	
 
 
 
 
 
 
-		/**
-		 * @return the h
-		 */
-		public int getH() {
-			return h;
-		}
 
 
 
 
 
 
-		/**
-		 * @param e the e to set
-		 */
-		public void setE(int e) {
-			this.e = e;
-		}
 
 
 
 
-
-
-		/**
-		 * @param m the m to set
-		 */
-		public void setM(int m) {
-			this.m = m;
-		}
-
-
-
-
-
-
-		/**
-		 * @param h the h to set
-		 */
-		public void setH(int h) {
-			this.h = h;
-		}
-
-
-
-
-
-
-		/**
-		 * @return the s
-		 */
-		public String getS() {
-			return s;
-		}
-
-
-
-
-
-
-		/**
-		 * @param s the s to set
-		 */
-		public void setS(String s) {
-			this.s = s;
-		}
+		
 		
 		
 		

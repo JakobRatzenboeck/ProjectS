@@ -32,9 +32,7 @@ public class Spiel extends Application {
 			int m = r.nextInt(11) +31;
 			int h = r.nextInt(22) + 42;
 			System.out.println(m + "     " + h);
-			hallo.setE(q);
-			hallo.setM(m);
-			hallo.setH(h);
+			
 			
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root,600,200);
