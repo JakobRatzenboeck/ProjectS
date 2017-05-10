@@ -52,7 +52,7 @@ public class Game {
 	}
 
 	public void setId() {
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy k:H:m");
 		LocalDate localDate = LocalDate.now();
 		id = dtf.format(localDate);
 	}
