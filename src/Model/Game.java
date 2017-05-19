@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
@@ -52,9 +53,9 @@ public class Game {
 	}
 
 	public void setId() {
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy k:H:m");
-		LocalDate localDate = LocalDate.now();
-		id = dtf.format(localDate);
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH.mm");
+		LocalDateTime localDatetime = LocalDateTime.now();
+		id = dtf.format(localDatetime);
 	}
 
 	public String getId() {
