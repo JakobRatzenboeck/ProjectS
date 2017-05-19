@@ -1,5 +1,6 @@
 package Gui;
 
+import java.io.File;
 import java.util.Random;
 
 import Model.Game;
@@ -7,10 +8,12 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -19,57 +22,84 @@ import javafx.scene.text.Font;
 
 
 public class Spiel extends Application {
+	
+	final FileChooser fileChooser = new FileChooser();
+	private Stage stage;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			
+			ThefinalGame sudoku;
 			
-			ThefinalGame hallo = new ThefinalGame();
-			
-			Random r = new Random();
-			int q=r.nextInt(22)   +9 ;
-			System.out.println(q);
-			int m = r.nextInt(11) +31;
-			int h = r.nextInt(22) + 42;
-			System.out.println(m + "     " + h);
-			
+			Random r = new Random();			
 			
 			BorderPane root = new BorderPane();
-			Scene scene = new Scene(root,600,200);
-			primaryStage.setTitle("SUDOKU GAME");
+			Scene scene = new Scene(root,400,400);
+			primaryStage.setTitle("Sudoku");
 			
 			Button easy = new Button("Einfach");
 			Button normal = new Button("Normal");
 			Button hard = new Button("Schwer");
 			Button load = new Button("Spiel Laden");
-			Button choose = new Button("EntwicklerModus");
 			
 			
 			VBox oben = new VBox(easy,normal,hard);
-			VBox unten = new VBox(load,choose)	;		
-			easy.setMaxSize(90, 20);
-			easy.setTranslateX(100);
-			easy.setTranslateY(40);
+			VBox unten = new VBox(load)	;					
 			
+			easy.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					int q = r.nextInt(22) + 9;
+					new ThefinalGame(q, primaryStage);
+				}
+			});
+
+			normal.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					int m = r.nextInt(11) + 31;
+					new ThefinalGame(m, primaryStage);
+				}
+			});
+
+			hard.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					int h = r.nextInt(22) + 42;
+					new ThefinalGame(h, primaryStage);
+				}
+			});
 			
-			easy.setOnAction(ActionEvent -> hallo.start(primaryStage));
-			normal.setOnAction(ActionEvent -> hallo.start(primaryStage));
-			hard.setOnAction(ActionEvent -> hallo.start(primaryStage));
+			load.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(final ActionEvent e) {
+					stage = primaryStage;
+					configureFileChooser(fileChooser);
+					File file = fileChooser.showOpenDialog(primaryStage);
+					if (file != null) {
+						openFile(file);
+					}
+				}
+			});
 			
-			
-			
-			
-			
-			normal.setMaxSize(90, 20);
-			normal.setTranslateX(250);
-			normal.setTranslateY(10);
-			
-			hard.setMaxSize(90, 20);
-			hard.setTranslateX(400);
-			hard.setTranslateY(-21);
-			
-			load.setMaxSize(210, 20);
-			load.setTranslateX(190);
+			easy.setMaxSize(70, 20);
+			easy.setTranslateX(120);
+			easy.setTranslateY(70);
+
+			normal.setMaxSize(70, 20);
+			normal.setTranslateX(170);
+			normal.setTranslateY(70);
+
+			hard.setMaxSize(70, 20);
+			hard.setTranslateX(220);
+			hard.setTranslateY(70);
+
+			load.setMaxSize(400, 20);
+			load.setTranslateX(0);
 			load.setTranslateY(-40);
 			
 			
@@ -77,27 +107,26 @@ public class Spiel extends Application {
 			root.setBottom(unten);
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+			primaryStage.centerOnScreen();
+			primaryStage.getIcons().add(new Image("JJGames.png"));
 			primaryStage.setScene(scene);
-			primaryStage.show();
-			
-			
-			
-			
+			primaryStage.show();			
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-
-		
-
-	
-	
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
-	
-	
-	
+	private static void configureFileChooser(final FileChooser fileChooser) {
+		fileChooser.setTitle("View Sudoku");
+		fileChooser.setInitialDirectory(
+				new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "savedGames"));
+	}
+
+	private void openFile(File file) {
+		new ThefinalGame(file, stage);
+	}	
 }

@@ -62,16 +62,18 @@ public class Game {
 	}
 
 	// Um in das Array die zahl einzufügen
-	public void zug(int x, int y, int move) {
+	public boolean zug(int x, int y, int move) {
 		if (ag.dreierfeld(x, y, move) && ag.reihe(x, y, move) && ag.spalte(x, y, move)) {
-			ag.setFertigesfeld(x, y, move);
+			return true;
 		}
+		return false;
 	}
 
-	public boolean notfinished() {
+	public boolean finished() {
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
-				if (fertigesfeld[j][i] == 0) {
+				if (ag.dreierfeld(j, i, fertigesfeld[j][i]) && ag.reihe(j, i, fertigesfeld[j][i])
+						&& ag.spalte(j, i, fertigesfeld[j][i])) {
 					return true;
 				}
 			}
@@ -80,7 +82,7 @@ public class Game {
 	}
 
 	public void fertig() {
-		if (notfinished()) {
+		if (finished()) {
 			String path = "savedGames/" + getId() + "_Sudoku.dat";
 			try {
 				Files.delete(Paths.get(path));
@@ -128,6 +130,18 @@ public class Game {
 			dis.close();
 		}
 	}
+	
+	public boolean exist(File file) {
+		for (int i = 1; i <= 10; ++i) {
+			String pathex = "savedGames/" + getId() + "_Sudoku_" + i + ".dat";
+			Paths.get(pathex);
+			if (new File(pathex).exists()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	// speichern aller Arrays
 	public void save() throws IOException {
@@ -199,7 +213,7 @@ public class Game {
 	 * @param fertigesfeld
 	 *            the fertigesfeld to set
 	 */
-	private void setFertigesfeld(int x, int y, int wert) {
+	public void setFertigesfeld(int x, int y, int wert) {
 		fertigesfeld[x][y] = wert;
 	}
 
@@ -221,7 +235,7 @@ public class Game {
 	/**
 	 * @return the feld
 	 */
-	private int[][] getFeld() {
+	public int[][] getFeld() {
 		return feld;
 	}
 
@@ -236,22 +250,7 @@ public class Game {
 	/**
 	 * @return the feld
 	 */
-	private boolean[][] getAnfang() {
-		return anfang;
-	}
-
-	public static void main(String[] args) throws IOException {
-		Game ag = new Game(40);
-		ag.print();
-		Game ag1 = new Game(9);
-		try {
-			ag1.save();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ag1.print();
-		Game ag2 = new Game(new File("savedGames/21.04.2017_Sudoku.dat"));
-		ag2.print();
+	public boolean getAnfang(int x, int y) {
+		return anfang[x][y];
 	}
 }
