@@ -85,20 +85,20 @@ public class Main extends Application {
 
 			settings.setPrefSize(90, 35);
 			start.setPrefSize(90, 35);
-			end.setPrefSize(90, 35);
 			credits.setPrefSize(90, 35);
+			end.setPrefSize(90, 35);
 			website.setPrefSize(90, 35);
 			website.setTranslateX(60);
 
 			settings.setTranslateX(150);
-			end.setTranslateX(150);
+			credits.setTranslateX(150);
 			start.setTranslateX(150);
-			credits.setTranslateX(250);
+			end.setTranslateX(250);
 
 			settings.setTranslateY(70);
-			credits.setTranslateY(-35);
+			end.setTranslateY(-35);
 			start.setTranslateY(35);
-			end.setTranslateY(105);
+			credits.setTranslateY(105);
 
 			// website.setTranslateY(-30);
 			top.setTranslateY(20);
