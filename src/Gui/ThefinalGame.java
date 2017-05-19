@@ -188,18 +188,18 @@ public class ThefinalGame extends Application {
 												sSpiel[j][i].setText("" + now);
 											}
 											gm.setFertigesfeld(j, i, now);
-											if (!gm.finished()) {
-												Alert meldung = new Alert(AlertType.INFORMATION);
-												meldung.setTitle("Eilmeldung");
-												meldung.setHeaderText("Sie haben gewonnen");
-												meldung.setContentText("Zurück zum Startscreen");
-											}
 										}
 									}
 
 								}
 							}
-
+							if (gm.finished()) {
+								Alert meldung = new Alert(AlertType.INFORMATION);
+								meldung.setTitle("Eilmeldung");
+								meldung.setHeaderText("Sie haben gewonnen");
+								meldung.setContentText("Zurück zum Startscreen");
+								meldung.show();
+							}
 						}
 					});
 				}

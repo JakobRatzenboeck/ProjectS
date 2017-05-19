@@ -16,6 +16,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
@@ -40,9 +41,9 @@ public class Optionen extends Dialog<ButtonType> {
 	double sVal = 0;
 	boolean tVal = false;
 
-	ButtonType buttonTypeOk = new ButtonType("Ok");
-	ButtonType buttonTypeReset = new ButtonType("Reset");
-	ButtonType buttonTypeBack = new ButtonType("Back");
+	ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.CANCEL_CLOSE);
+	ButtonType buttonTypeReset = new ButtonType("Reset", ButtonData.APPLY);
+	ButtonType buttonTypeBack = new ButtonType("Back", ButtonData.APPLY);
 	TabPane tPane = new TabPane();
 	Tab allgemein = new Tab("Allgemein");
 	GridPane allgemeinP = new GridPane();
@@ -85,7 +86,14 @@ public class Optionen extends Dialog<ButtonType> {
 		hCb.getSelectionModel().select(hNS);
 		bCb.getSelectionModel().select(bNS);
 		fCb.getSelectionModel().select(fNS);
+		
+		
+		
+		//
 		System.out.println(tVal);
+		
+		
+		
 		if (tVal) {
 			slider.setValue(0);
 			mute.setGraphic(new ImageView(muted));

@@ -70,16 +70,31 @@ public class Game {
 		return false;
 	}
 
-	public boolean finished() {
+	public boolean full() {
+		boolean fertig = true;
 		for (int i = 0; i < 9; i++) {
 			for (int j = 0; j < 9; j++) {
-				if (ag.dreierfeld(j, i, fertigesfeld[j][i]) && ag.reihe(j, i, fertigesfeld[j][i])
-						&& ag.spalte(j, i, fertigesfeld[j][i])) {
-					return true;
+				if (fertigesfeld[j][i] == 0) {
+					fertig = false;
 				}
 			}
 		}
-		return false;
+		return fertig;
+	}
+
+	public boolean finished() {
+		boolean fertig = false;
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				if (full()) {
+					if (!ag.dreierfeld(j, i, fertigesfeld[j][i]) && !ag.reihe(j, i, fertigesfeld[j][i])
+							&& !ag.spalte(j, i, fertigesfeld[j][i])) {
+						fertig = true;
+					}
+				}
+			}
+		}
+		return fertig;
 	}
 
 	public void fertig() {
@@ -131,7 +146,7 @@ public class Game {
 			dis.close();
 		}
 	}
-	
+
 	public boolean exist(File file) {
 		for (int i = 1; i <= 10; ++i) {
 			String pathex = "savedGames/" + getId() + "_Sudoku_" + i + ".dat";
@@ -142,7 +157,6 @@ public class Game {
 		}
 		return false;
 	}
-
 
 	// speichern aller Arrays
 	public void save() throws IOException {
