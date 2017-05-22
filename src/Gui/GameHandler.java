@@ -32,6 +32,5 @@ public class GameHandler implements EventHandler<KeyEvent> {
 		} else if(event.getCode() == KeyCode.DIGIT9 || event.getCode() == KeyCode.NUMPAD9) {
 			spiel.selectButns(8);
 		} 
-
 	}
 }

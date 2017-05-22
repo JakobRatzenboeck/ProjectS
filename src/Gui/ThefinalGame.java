@@ -21,7 +21,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
@@ -86,7 +88,8 @@ public class ThefinalGame extends Application {
 		neu.setOnAction(ActionEvent -> {
 			Spiel s = new Spiel();
 			try {
-				s.start(primaryStage);
+				s.start(new Stage());
+				primaryStage.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -170,7 +173,6 @@ public class ThefinalGame extends Application {
 				}
 				if (gm.getAnfang(j, i) == true) {
 					sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-					// sSpiel[j][i].se(true);
 				} else {
 					sSpiel[j][i].setOnAction(new EventHandler<ActionEvent>() {
 
@@ -182,23 +184,37 @@ public class ThefinalGame extends Application {
 									if (sSpiel[j][i].isFocused()) {
 										if (sSpiel[j][i].getText().equals("" + now)) {
 											sSpiel[j][i].setText("");
+											if (gm.getAnfang(j, i)) {
+												sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+											} else {
+												sSpiel[j][i].setStyle("-fx-border-color: None");
+											}
 											gm.setFertigesfeld(j, i, 0);
 										} else {
 											if (now != 0) {
+												sSpiel[j][i].setStyle("-fx-color: #00A9D3");
 												sSpiel[j][i].setText("" + now);
 											}
 											gm.setFertigesfeld(j, i, now);
 										}
 									}
-
 								}
 							}
 							if (gm.finished()) {
+
+								ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.CANCEL_CLOSE);
 								Alert meldung = new Alert(AlertType.INFORMATION);
 								meldung.setTitle("Eilmeldung");
 								meldung.setHeaderText("Sie haben gewonnen");
 								meldung.setContentText("Zurück zum Startscreen");
-								meldung.show();
+								meldung.getDialogPane().getButtonTypes().setAll(buttonTypeOk);
+								Optional<ButtonType> result = meldung.showAndWait();
+								if (result.get() == buttonTypeOk) {
+									gm.fertig();
+									Main m = new Main(400, 400);
+									m.start(new Stage());
+									primaryStage.close();
+								}
 							}
 						}
 					});
@@ -248,14 +264,20 @@ public class ThefinalGame extends Application {
 					}
 					for (int i = 0; i < 9; ++i) {
 						for (int j = 0; j < 9; ++j) {
-							if (sSpiel[j][i].getText() == now + "") {
-								// final DropShadow glow = new DropShadow();
-								// glow.setColor(Color.YELLOW);
-								// sSpiel[j][i].setEffect(glow);
+							if (gm.getFertigesfeld(j, i) != 0) {
+								if (gm.getFertigesfeld(j, i) == now) {
+									sSpiel[j][i].setStyle("-fx-font-color: #");
+									sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+								} else {
+									if (gm.getAnfang(j, i)) {
+										sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+									} else {
+										sSpiel[j][i].setStyle("-fx-border-color: None");
+									}
+								}
 							}
 						}
 					}
-
 				}
 			});
 			num.getChildren().add(butns[i]);
@@ -269,6 +291,7 @@ public class ThefinalGame extends Application {
 		FlowPane.setMargin(sFeld, new Insets(50, 66, 30, 66));
 		FlowPane.setMargin(num, new Insets(0, 75, 0, 75));
 
+		root.setStyle("-fx-background-color: #" + hS + "");
 		root.getChildren().addAll(mBar, sFeld, num);
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new GameHandler(this));
@@ -319,6 +342,28 @@ public class ThefinalGame extends Application {
 		now = bunts + 1;
 		butns[bunts].setSelected(true);
 		butns[bunts].requestFocus();
+		now = 0;
+		for (int i = 0; i < 9; ++i) {
+			if (butns[i].isSelected()) {
+				now = Integer.parseInt(butns[i].getText());
+			}
+		}
+		for (int i = 0; i < 9; ++i) {
+			for (int j = 0; j < 9; ++j) {
+				if (gm.getFertigesfeld(j, i) != 0) {
+					if (gm.getFertigesfeld(j, i) == now) {
+						sSpiel[j][i].setStyle("-fx-font-color: #");
+						sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+					} else {
+						if (gm.getAnfang(j, i)) {
+							sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+						} else {
+							sSpiel[j][i].setStyle("-fx-border-color: None");
+						}
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -338,5 +383,4 @@ public class ThefinalGame extends Application {
 	private void openFile(File file) {
 		new ThefinalGame(file, stage);
 	}
-
 }

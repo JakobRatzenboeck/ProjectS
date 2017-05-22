@@ -84,12 +84,19 @@ public class Game {
 
 	public boolean finished() {
 		boolean fertig = false;
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				if (full()) {
-					if (!ag.dreierfeld(j, i, fertigesfeld[j][i]) && !ag.reihe(j, i, fertigesfeld[j][i])
-							&& !ag.spalte(j, i, fertigesfeld[j][i])) {
-						fertig = true;
+		if (full()) {
+			// if(ag.feldIsValid(fertigesfeld)) {
+			// fertig = true;
+			// } ag.dreierfeld(j, i, fertigesfeld[j][i]) && ag.reihe(j, i,
+			// fertigesfeld[j][i]) && ag.spalte(j, i, fertigesfeld[j][i])
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < 9; j++) {
+					if (anfang[j][i] == false) {
+						if (fertigesfeld[j][i] == ag.getFeld(j, i)) {
+							fertig = true;
+						} else {
+							fertig = false;
+						}
 					}
 				}
 			}
@@ -110,13 +117,6 @@ public class Game {
 				// File permission problems are caught here.
 				System.err.println(x);
 			}
-		}
-	}
-
-	// Wenn mann sich fertahn hat
-	public void zugzurück(int x, int y) {
-		if (getFertigesfeld(x, y) != 0) {
-			setFertigesfeld(x, y, 0);
 		}
 	}
 

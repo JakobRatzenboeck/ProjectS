@@ -42,6 +42,13 @@ public class Autogenerate {
 	public int[][] getFeld() {
 		return feld;
 	}
+	
+	/**
+	 * @return a specific value of feld
+	 */
+	public int getFeld(int x, int y) {
+		return feld[x][y];
+	}
 
 	public boolean reihe(int x, int y, int number) {
 		for (int i = 0; i < 9; i++) {
@@ -179,7 +186,11 @@ public class Autogenerate {
 	public void bereiten(int wieViele) {
 		backtracking();
 		Random random = new Random();
-		fertigesfeld = feld;
+		for(int y =0;y<9;++y) {
+			for(int x=0;x<9;++x) {
+				fertigesfeld[x][y] = feld[x][y];
+			}
+		}
 		for (int soll = 0; soll < wieViele; soll++) {
 			y = random.nextInt(9);
 			x = random.nextInt(9);

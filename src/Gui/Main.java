@@ -23,6 +23,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class Main extends Application {
+
+	private int height;
+	private int width;
+
+	public Main() {
+
+	}
+
+	public Main(int height, int width) {
+		this.height = height;
+		this.width = width;
+	}
+
 	@Override
 	public void start(Stage primaryStage) {
 		try {

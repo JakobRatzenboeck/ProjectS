@@ -1,4 +1,5 @@
 package Gui;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -41,9 +42,9 @@ public class Optionen extends Dialog<ButtonType> {
 	double sVal = 0;
 	boolean tVal = false;
 
-	ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.CANCEL_CLOSE);
-	ButtonType buttonTypeReset = new ButtonType("Reset", ButtonData.APPLY);
-	ButtonType buttonTypeBack = new ButtonType("Back", ButtonData.APPLY);
+	ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.LEFT);
+	ButtonType buttonTypeReset = new ButtonType("Reset");
+	ButtonType buttonTypeBack = new ButtonType("Back", ButtonData.RIGHT);
 	TabPane tPane = new TabPane();
 	Tab allgemein = new Tab("Allgemein");
 	GridPane allgemeinP = new GridPane();
@@ -86,14 +87,10 @@ public class Optionen extends Dialog<ButtonType> {
 		hCb.getSelectionModel().select(hNS);
 		bCb.getSelectionModel().select(bNS);
 		fCb.getSelectionModel().select(fNS);
-		
-		
-		
+
 		//
 		System.out.println(tVal);
-		
-		
-		
+
 		if (tVal) {
 			slider.setValue(0);
 			mute.setGraphic(new ImageView(muted));
@@ -249,6 +246,66 @@ public class Optionen extends Dialog<ButtonType> {
 			}
 		});
 
+		// c"", "Schwarz", "Grau", "Weiß", "Blau", "Rot", "Gelb", "Grün");
+
+		hTf.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (hTf.getText().length() == 6) {
+					if (hTf.getText().equalsIgnoreCase("000000")) {
+						hNS = "Schwarz";
+						hS = "000000";
+						hCb.getSelectionModel().select(1);
+					} else if (hTf.getText().equalsIgnoreCase("C3C3C3")) {
+						hNS = "Grau";
+						hS = "C3C3C3";
+						hCb.getSelectionModel().select(2);
+					} else if (hTf.getText().equalsIgnoreCase("FFFFFF")) {
+						hNS = "Weiß";
+						hS = "FFFFFF";
+						hCb.getSelectionModel().select(3);
+					} else if (hTf.getText().equalsIgnoreCase("00A2E8")) {
+						hNS = "Blau";
+						hS = "00A2E8";
+						hCb.getSelectionModel().select(4);
+					} else if (hTf.getText().equalsIgnoreCase("ED1C24")) {
+						hNS = "Rot";
+						hS = "ED1C24";
+						hCb.getSelectionModel().select(5);
+					} else if (hTf.getText().equalsIgnoreCase("FFF200")) {
+						hNS = "Gelb";
+						hS = "FFF200";
+						hCb.getSelectionModel().select(6);
+					} else if (hTf.getText().equalsIgnoreCase("22B14C")) {
+						hNS = "Grün";
+						hS = "22B14C";
+						hCb.getSelectionModel().select(7);
+					} else {
+						hNS = "";
+						hS = hTf.getText();
+						hCb.getSelectionModel().selectFirst();
+					}
+				}
+			}
+		});
+		bTf.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		fTf.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+
 		allgemeinP.add(h, 1, 1);
 		allgemeinP.add(hCb, 2, 1);
 
@@ -368,7 +425,7 @@ public class Optionen extends Dialog<ButtonType> {
 				} else {
 					dos.writeDouble(sVal);
 				}
-				if(mute.getGraphic() == new ImageView(muted)) {
+				if (mute.getGraphic() == new ImageView(muted)) {
 					dos.writeBoolean(true);
 				} else {
 					dos.writeBoolean(false);
