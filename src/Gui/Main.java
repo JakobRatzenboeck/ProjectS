@@ -77,14 +77,14 @@ public class Main extends Application {
 
 				public void handle(ActionEvent event) {
 
-					String location = new File("src/Web/Sudoku.html").toURI().toString();
+//					Uri location = new Uri("http://uhl17723.webspace.spengergasse.at/").toURI().toString();
 
 					Desktop desktop = Desktop.getDesktop();
 
 					// Adresse mit Standardbrowser anzeigen
 					URI uri;
 					try {
-						uri = new URI(location);
+						uri = new URI("http://uhl17723.webspace.spengergasse.at/");
 						desktop.browse(uri);
 					} catch (Exception oError) {
 						// Hier Fehler abfangen
