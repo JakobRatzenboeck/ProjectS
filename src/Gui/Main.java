@@ -79,7 +79,7 @@ public class Main extends Application {
 
 //					Uri location = new Uri("http://uhl17723.webspace.spengergasse.at/").toURI().toString();
 
-					Desktop desktop = Desktop.getDesktop();
+					Desktop desktop = Desktop.getDesktop();	
 
 					// Adresse mit Standardbrowser anzeigen
 					URI uri;
