@@ -84,6 +84,7 @@ public class Game {
 
 	public boolean finished() {
 		boolean fertig = false;
+		int wieFrichtig = 0;
 		if (full()) {
 			// if(ag.feldIsValid(fertigesfeld)) {
 			// fertig = true;
@@ -91,14 +92,15 @@ public class Game {
 			// fertigesfeld[j][i]) && ag.spalte(j, i, fertigesfeld[j][i])
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 9; j++) {
-					if (anfang[j][i] == false) {
-						if (fertigesfeld[j][i] == ag.getFeld(j, i)) {
-							fertig = true;
-						} else {
-							fertig = false;
-						}
+					if (fertigesfeld[j][i] == ag.getFeld(j, i)) {
+						wieFrichtig++;
 					}
 				}
+			}
+			if (wieFrichtig == 81) {
+				fertig = true;
+			} else {
+				fertig = false;
 			}
 		}
 		return fertig;
@@ -162,6 +164,37 @@ public class Game {
 	public void save() throws IOException {
 		feld = ag.getFeld();
 		String path = "savedGames/" + getId() + "_Sudoku.dat";
+		Paths.get(path);
+		File f = new File(path);
+		f.getParentFile().mkdirs();
+		f.createNewFile();
+		DataOutputStream dos = new DataOutputStream(new FileOutputStream(f));
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				dos.writeInt(j);
+				dos.writeInt(i);
+				dos.writeInt(fertigesfeld[j][i]);
+			}
+		}
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				dos.writeInt(j);
+				dos.writeInt(i);
+				dos.writeInt(feld[j][i]);
+			}
+		}
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 9; j++) {
+				dos.writeInt(j);
+				dos.writeInt(i);
+				dos.writeBoolean(anfang[j][i]);
+			}
+		}
+		dos.close();
+	}
+
+	public void save(String path) throws IOException {
+		feld = ag.getFeld();
 		Paths.get(path);
 		File f = new File(path);
 		f.getParentFile().mkdirs();

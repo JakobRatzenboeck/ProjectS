@@ -47,10 +47,10 @@ public class Main extends Application {
 			Label top = new Label("Sudoku");
 			top.setFont(new Font("Arial", 30));
 			Button start = new Button("Start");
-			Button end = new Button("Exit");
+			Button end = new Button("Ende");
 			Button credits = new Button("Credits");
 			Button website = new Button("Website");
-			Button settings = new Button("Settings");
+			Button settings = new Button("Einstellung");
 
 			end.setOnAction(ActionEvent -> Platform.exit());
 			Spiel s = new Spiel();

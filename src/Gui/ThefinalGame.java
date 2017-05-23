@@ -4,6 +4,8 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 import Model.Game;
@@ -12,6 +14,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -25,6 +28,7 @@ import javafx.scene.effect.BlendMode;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -35,6 +39,7 @@ import javafx.stage.Stage;
 
 public class ThefinalGame extends Application {
 
+	private ToggleButton hilfe;
 	private Button[][] sSpiel = new Button[9][9];
 	private ToggleButton[] butns = new ToggleButton[9];
 	private int now;
@@ -44,6 +49,7 @@ public class ThefinalGame extends Application {
 	final GameHandler gh = new GameHandler(this);
 	private Stage stage;
 
+	private String loadpath;
 	private String hNS = "";
 	private String bNS = "";
 	private String fNS = "";
@@ -64,6 +70,7 @@ public class ThefinalGame extends Application {
 	public ThefinalGame(File source, Stage primaryStage) {
 		gm = new Game(source);
 		try {
+			loadpath = source.getPath();
 			start(primaryStage);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -79,11 +86,11 @@ public class ThefinalGame extends Application {
 		primaryStage.setTitle("Sudoku");
 
 		MenuBar mBar = new MenuBar();
-		Menu file = new Menu("File");
-		MenuItem neu = new MenuItem("New");
-		MenuItem save = new MenuItem("Save");
-		MenuItem load = new MenuItem("Load");
-		MenuItem opt = new MenuItem("Options");
+		Menu file = new Menu("Spiel");
+		MenuItem neu = new MenuItem("Neu");
+		MenuItem save = new MenuItem("Speichern");
+		MenuItem load = new MenuItem("Laden");
+		MenuItem opt = new MenuItem("Optionen");
 
 		neu.setOnAction(ActionEvent -> {
 			Spiel s = new Spiel();
@@ -98,7 +105,14 @@ public class ThefinalGame extends Application {
 
 		save.setOnAction(ActionEvent -> {
 			try {
-				gm.save();
+				if (loadpath != null) {
+					gm.save(loadpath);
+				} else {
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH.mm");
+					LocalDateTime localDatetime = LocalDateTime.now();
+					gm.save();
+					loadpath = "savedGames/" + dtf.format(localDatetime) + "_Sudoku.dat";
+				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -106,17 +120,32 @@ public class ThefinalGame extends Application {
 		});
 
 		load.setOnAction(ActionEvent -> {
-			ButtonType buttonTypeOne = new ButtonType("Save");
-			ButtonType buttonTypeTwo = new ButtonType("Don't save");
-			ButtonType buttonTypeThree = new ButtonType("Cancel");
-			Alert info = new Alert(AlertType.CONFIRMATION);
-			info.setTitle("Ungespeichertes Spiel");
-			info.setHeaderText("Wollen sie das derzeitige Sudoku speichern?");
-			info.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
-			Optional<ButtonType> result = info.showAndWait();
-			if (result.get() == buttonTypeOne) {
-				try {
-					gm.save();
+			System.out.println(loadpath);
+			if (loadpath == null) {
+				ButtonType buttonTypeOne = new ButtonType("Speichern");
+				ButtonType buttonTypeTwo = new ButtonType("Nicht speichern");
+				ButtonType buttonTypeThree = new ButtonType("Abbrechen");
+				Alert info = new Alert(AlertType.CONFIRMATION);
+				info.setTitle("Ungespeichertes Spiel");
+				info.setHeaderText("Wollen sie das derzeitige Sudoku speichern?");
+				info.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
+				Optional<ButtonType> result = info.showAndWait();
+				if (result.get() == buttonTypeOne) {
+					try {
+						gm.save();
+						stage = primaryStage;
+						configureFileChooser(fileChooser);
+						File file1 = fileChooser.showOpenDialog(primaryStage);
+						if (file != null) {
+							openFile(file1);
+						}
+
+						info.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} else if (result.get() == buttonTypeTwo) {
 					stage = primaryStage;
 					configureFileChooser(fileChooser);
 					File file1 = fileChooser.showOpenDialog(primaryStage);
@@ -125,23 +154,16 @@ public class ThefinalGame extends Application {
 					}
 
 					info.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} else if (result.get() == buttonTypeThree) {
+					info.close();
 				}
-			} else if (result.get() == buttonTypeTwo) {
+			} else {
 				stage = primaryStage;
 				configureFileChooser(fileChooser);
 				File file1 = fileChooser.showOpenDialog(primaryStage);
 				if (file != null) {
 					openFile(file1);
 				}
-
-				info.close();
-			} else if (result.get() == buttonTypeThree) {
-				info.close();
-			} else {
-
 			}
 		});
 
@@ -150,20 +172,89 @@ public class ThefinalGame extends Application {
 		});
 
 		file.getItems().addAll(neu, save, load, opt);
-		Menu help = new Menu("Help");
-		MenuItem quickHelp = new MenuItem("Quickfix");
+		// Menu help = new Menu("Hilfe");
+		// MenuItem quickHelp = new MenuItem("Quickfix");
+		//
+		// quickHelp.setOnAction(ActionEvent -> Platform.exit());
+		//
+		// MenuItem about = new MenuItem("Über");
+		// help.getItems().addAll(quickHelp, about);
 
-		quickHelp.setOnAction(ActionEvent -> Platform.exit());
-
-		MenuItem about = new MenuItem("About");
-		help.getItems().addAll(quickHelp, about);
-
-		mBar.getMenus().addAll(file, help);
+		mBar.getMenus().addAll(file);
 		mBar.setPrefHeight(10);
-		mBar.setMinWidth(600);
+		mBar.setMinWidth(500);
+		mBar.setPrefWidth(600);
+		mBar.setMaxWidth(1000);
 
+		// Zusatz
+		HBox adds = new HBox();
+		adds.setMinSize(500, 50);
+		adds.setPrefSize(600, 50);
+		adds.setMaxSize(1000, 50);
+
+		hilfe = new ToggleButton();
+		Image resetP = new Image("reset_45.png");
+		Button reset = new Button();
+		reset.setGraphic(new ImageView(resetP));
+
+		hilfe.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				if (!hilfe.isSelected()) {
+					for (int i = 0; i < 9; ++i) {
+						for (int j = 0; j < 9; ++j) {
+							if (gm.getAnfang(j, i)) {
+								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+							} else {
+								sSpiel[j][i].setStyle("-fx-border-color: #");
+							}
+						}
+					}
+					hilfe.setStyle("-fx-color: #F3F3F3");
+				} else {
+					for (int i = 0; i < 9; ++i) {
+						for (int j = 0; j < 9; ++j) {
+							if (gm.getFertigesfeld(j, i) != 0) {
+								if (gm.getFertigesfeld(j, i) == now) {
+									sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+								}
+							}
+						}
+					}
+					hilfe.setStyle("-fx-color: #00A9D3");
+				}
+			}
+
+		});
+
+		reset.setOnAction(new EventHandler<ActionEvent>() {
+
+			@Override
+			public void handle(ActionEvent event) {
+				for (int i = 0; i < 9; ++i) {
+					for (int j = 0; j < 9; ++j) {
+						if (gm.getAnfang(j, i) == false) {
+							sSpiel[j][i].setText("");
+							sSpiel[j][i].setStyle("-fx-background-color: #");
+							gm.setFertigesfeld(j, i, 0);
+
+						}
+					}
+				}
+			}
+		});
+
+		hilfe.setMinSize(50, 50);
+		reset.setMinSize(50, 50);
+
+		adds.getChildren().addAll(hilfe, reset);
+
+		// Sudoku Feld
 		FlowPane sFeld = new FlowPane();
+		sFeld.setMinSize(274, 274);
 		sFeld.setPrefSize(454, 454);
+		sFeld.setMaxSize(630, 630);
 		sFeld.setStyle("-fx-background-color: #" + bS + "");
 		for (int i = 0; i < 9; ++i) {
 			for (int j = 0; j < 9; ++j) {
@@ -187,7 +278,7 @@ public class ThefinalGame extends Application {
 											if (gm.getAnfang(j, i)) {
 												sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 											} else {
-												sSpiel[j][i].setStyle("-fx-border-color: None");
+												sSpiel[j][i].setStyle("-fx-border-color: #");
 											}
 											gm.setFertigesfeld(j, i, 0);
 										} else {
@@ -219,7 +310,9 @@ public class ThefinalGame extends Application {
 						}
 					});
 				}
+				sSpiel[j][i].setMinSize(30, 30);
 				sSpiel[j][i].setPrefSize(50, 50);
+				sSpiel[j][i].setMaxSize(70, 70);
 				sFeld.getChildren().add(sSpiel[j][i]);
 				if (j == 2 || j == 5) {
 					FlowPane.setMargin(sSpiel[j][i], new Insets(0, 2, 0, 0));
@@ -260,24 +353,10 @@ public class ThefinalGame extends Application {
 					for (int i = 0; i < 9; ++i) {
 						if (butns[i].isSelected()) {
 							now = Integer.parseInt(butns[i].getText());
+							selectButns(i);
 						}
 					}
-					for (int i = 0; i < 9; ++i) {
-						for (int j = 0; j < 9; ++j) {
-							if (gm.getFertigesfeld(j, i) != 0) {
-								if (gm.getFertigesfeld(j, i) == now) {
-									sSpiel[j][i].setStyle("-fx-font-color: #");
-									sSpiel[j][i].setStyle("-fx-color: #00A9D3");
-								} else {
-									if (gm.getAnfang(j, i)) {
-										sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-									} else {
-										sSpiel[j][i].setStyle("-fx-border-color: None");
-									}
-								}
-							}
-						}
-					}
+
 				}
 			});
 			num.getChildren().add(butns[i]);
@@ -287,12 +366,12 @@ public class ThefinalGame extends Application {
 				int i = 0; i < 9; ++i) {
 			HBox.setMargin(butns[i], new Insets(50, 12, 0, 12));
 		}
-
-		FlowPane.setMargin(sFeld, new Insets(50, 66, 30, 66));
+		FlowPane.setMargin(adds, new Insets(2.5, 0, 2.5, 486));
+		FlowPane.setMargin(sFeld, new Insets(5, 66, 30, 66));
 		FlowPane.setMargin(num, new Insets(0, 75, 0, 75));
 
 		root.setStyle("-fx-background-color: #" + hS + "");
-		root.getChildren().addAll(mBar, sFeld, num);
+		root.getChildren().addAll(mBar, adds, sFeld, num);
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new GameHandler(this));
 		primaryStage.setMinWidth(600);
@@ -342,23 +421,18 @@ public class ThefinalGame extends Application {
 		now = bunts + 1;
 		butns[bunts].setSelected(true);
 		butns[bunts].requestFocus();
-		now = 0;
-		for (int i = 0; i < 9; ++i) {
-			if (butns[i].isSelected()) {
-				now = Integer.parseInt(butns[i].getText());
-			}
-		}
-		for (int i = 0; i < 9; ++i) {
-			for (int j = 0; j < 9; ++j) {
-				if (gm.getFertigesfeld(j, i) != 0) {
-					if (gm.getFertigesfeld(j, i) == now) {
-						sSpiel[j][i].setStyle("-fx-font-color: #");
-						sSpiel[j][i].setStyle("-fx-color: #00A9D3");
-					} else {
-						if (gm.getAnfang(j, i)) {
-							sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+		if (hilfe.isSelected()) {
+			for (int i = 0; i < 9; ++i) {
+				for (int j = 0; j < 9; ++j) {
+					if (gm.getFertigesfeld(j, i) != 0) {
+						if (gm.getFertigesfeld(j, i) == now) {
+							sSpiel[j][i].setStyle("-fx-color: #00A9D3");
 						} else {
-							sSpiel[j][i].setStyle("-fx-border-color: None");
+							if (gm.getAnfang(j, i)) {
+								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+							} else {
+								sSpiel[j][i].setStyle("-fx-border-color: None");
+							}
 						}
 					}
 				}

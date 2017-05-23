@@ -4,7 +4,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -17,6 +16,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -33,18 +34,27 @@ import javafx.scene.layout.GridPane;
 
 public class Optionen extends Dialog<ButtonType> {
 
+	
+	//Farbe
 	String hNS = "";
-	String hS = "";
 	String bNS = "";
-	String bS = "";
 	String fNS = "";
+
+	// Farbe in hexadezimal
+	String hS = "";
+	String bS = "";
 	String fS = "";
+	
+	// Lautstaerke
 	double sVal = 0;
+	
+	// Stummschaltung
 	boolean tVal = false;
+	
 
 	ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.LEFT);
 	ButtonType buttonTypeReset = new ButtonType("Reset");
-	ButtonType buttonTypeBack = new ButtonType("Back", ButtonData.RIGHT);
+	ButtonType buttonTypeBack = new ButtonType("Back", ButtonData.CANCEL_CLOSE);
 	TabPane tPane = new TabPane();
 	Tab allgemein = new Tab("Allgemein");
 	GridPane allgemeinP = new GridPane();
@@ -55,28 +65,31 @@ public class Optionen extends Dialog<ButtonType> {
 			"Rot", "Gelb", "Grün");
 
 	Label h = new Label("Hintergrund: ");
-	ComboBox hCb = new ComboBox(options);
+	ComboBox<String> hCb = new ComboBox<String>(options);
 
 	Label b = new Label("Border: ");
-	ComboBox bCb = new ComboBox(options);
+	ComboBox<String> bCb = new ComboBox<String>(options);
 
 	Label f = new Label("Felder: ");
-	ComboBox fCb = new ComboBox(options);
+	ComboBox<String> fCb = new ComboBox<String>(options);
 
 	Label m = new Label("Musiklautstärke:");
 	Slider slider = new Slider();
+	
 	ToggleButton mute = new ToggleButton();
+	// Bilder für mute-Button
 	Image muted = new Image("muted.png");
 	Image unmuted = new Image("unmuted.png");
 	Image unmuted0 = new Image("unmuted0.png");
 	Image unmuted1 = new Image("unmuted1.png");
 	Image unmuted2 = new Image("unmuted2.png");
 
+	// fortgeschrittene sachen
 	TextField hTf = new TextField();
 	TextField bTf = new TextField();
 	TextField fTf = new TextField();
+	TextField lPath = new TextField();
 
-	@SuppressWarnings("unchecked")
 	public Optionen(int height, int width) {
 		try {
 			load();
@@ -84,9 +97,9 @@ public class Optionen extends Dialog<ButtonType> {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		hCb.getSelectionModel().select(hNS);
-		bCb.getSelectionModel().select(bNS);
-		fCb.getSelectionModel().select(fNS);
+		www(hCb, hNS);
+		www(bCb, bNS);
+		www(fCb, fNS);
 
 		//
 		System.out.println(tVal);
@@ -246,66 +259,6 @@ public class Optionen extends Dialog<ButtonType> {
 			}
 		});
 
-		// c"", "Schwarz", "Grau", "Weiß", "Blau", "Rot", "Gelb", "Grün");
-
-		hTf.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				if (hTf.getText().length() == 6) {
-					if (hTf.getText().equalsIgnoreCase("000000")) {
-						hNS = "Schwarz";
-						hS = "000000";
-						hCb.getSelectionModel().select(1);
-					} else if (hTf.getText().equalsIgnoreCase("C3C3C3")) {
-						hNS = "Grau";
-						hS = "C3C3C3";
-						hCb.getSelectionModel().select(2);
-					} else if (hTf.getText().equalsIgnoreCase("FFFFFF")) {
-						hNS = "Weiß";
-						hS = "FFFFFF";
-						hCb.getSelectionModel().select(3);
-					} else if (hTf.getText().equalsIgnoreCase("00A2E8")) {
-						hNS = "Blau";
-						hS = "00A2E8";
-						hCb.getSelectionModel().select(4);
-					} else if (hTf.getText().equalsIgnoreCase("ED1C24")) {
-						hNS = "Rot";
-						hS = "ED1C24";
-						hCb.getSelectionModel().select(5);
-					} else if (hTf.getText().equalsIgnoreCase("FFF200")) {
-						hNS = "Gelb";
-						hS = "FFF200";
-						hCb.getSelectionModel().select(6);
-					} else if (hTf.getText().equalsIgnoreCase("22B14C")) {
-						hNS = "Grün";
-						hS = "22B14C";
-						hCb.getSelectionModel().select(7);
-					} else {
-						hNS = "";
-						hS = hTf.getText();
-						hCb.getSelectionModel().selectFirst();
-					}
-				}
-			}
-		});
-		bTf.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		fTf.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
 		allgemeinP.add(h, 1, 1);
 		allgemeinP.add(hCb, 2, 1);
 
@@ -413,6 +366,9 @@ public class Optionen extends Dialog<ButtonType> {
 			f.getParentFile().mkdirs();
 			try {
 				f.createNewFile();
+				getColorFromText(hTf);
+				getColorFromText(bTf);
+				getColorFromText(fTf);
 				dos = new DataOutputStream(new FileOutputStream(f));
 				dos.writeUTF("" + hCb.getSelectionModel().getSelectedItem());
 				dos.writeUTF("" + bCb.getSelectionModel().getSelectedItem());
@@ -465,6 +421,93 @@ public class Optionen extends Dialog<ButtonType> {
 			bTf.setText("000000");
 			fTf.setText("C3C3C3");
 			this.showAndWait();
+		}
+	}
+
+	public void getColorFromText(TextField feld) {
+		String farbe = "";
+		String hexa = "";
+		int aIndex = 0;
+		if (feld.getText().length() == 6) {
+			if (feld.getText().equalsIgnoreCase("000000")) {
+				farbe = "Schwarz";
+				hexa = "000000";
+				aIndex = 1;
+			} else if (feld.getText().equalsIgnoreCase("C3C3C3")) {
+				farbe = "Grau";
+				hexa = "C3C3C3";
+				aIndex = 2;
+			} else if (feld.getText().equalsIgnoreCase("FFFFFF")) {
+				farbe = "Weiß";
+				hexa = "FFFFFF";
+				aIndex = 3;
+			} else if (feld.getText().equalsIgnoreCase("00A2E8")) {
+				farbe = "Blau";
+				hexa = "00A2E8";
+				aIndex = 4;
+			} else if (feld.getText().equalsIgnoreCase("ED1C24")) {
+				farbe = "Rot";
+				hexa = "ED1C24";
+				aIndex = 5;
+			} else if (feld.getText().equalsIgnoreCase("FFF200")) {
+				farbe = "Gelb";
+				hexa = "FFF200";
+				aIndex = 6;
+			} else if (feld.getText().equalsIgnoreCase("22B14C")) {
+				farbe = "Grün";
+				hexa = "22B14C";
+				aIndex = 7;
+			} else {
+				farbe = "";
+				hexa = feld.getText();
+				aIndex = 0;
+			}
+			if (feld == hTf) {
+				hNS = farbe;
+				hS = hexa;
+				hCb.getSelectionModel().select(aIndex);
+			} else if (feld == bTf) {
+				bNS = farbe;
+				bS = hexa;
+				bCb.getSelectionModel().select(aIndex);
+			} else if (feld == fTf) {
+				fNS = farbe;
+				fS = hexa;
+				fCb.getSelectionModel().select(aIndex);
+			}
+		} else {
+			Alert a = new Alert(AlertType.INFORMATION);
+			a.setTitle("Geht nicht");
+			a.setHeaderText(feld.getText() + "muss genau 6 Zeichen lang sein!");
+			a.setContentText("Zusätzlich dürfen nur A,B,C,D,E,F verwendet werden!");
+			feld.requestFocus();
+			a.showAndWait();
+			this.showAndWait();
+		}
+
+	}
+
+	public void www(ComboBox<String> setzen, String wert) {
+		if (wert.equals("Schwarz")) {
+			setzen.getSelectionModel().select(1);
+		}
+		if (wert.equals("Grau")) {
+			setzen.getSelectionModel().select(2);
+		}
+		if (wert.equals("Weiß")) {
+			setzen.getSelectionModel().select(3);
+		}
+		if (wert.equals("Blau")) {
+			setzen.getSelectionModel().select(4);
+		}
+		if (wert.equals("Rot")) {
+			setzen.getSelectionModel().select(5);
+		}
+		if (wert.equals("Gelb")) {
+			setzen.getSelectionModel().select(6);
+		}
+		if (wert.equals("Gruen")) {
+			setzen.getSelectionModel().select(7);
 		}
 	}
 
