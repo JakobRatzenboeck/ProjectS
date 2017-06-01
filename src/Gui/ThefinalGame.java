@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import Controler.GameHandler;
 import Model.Game;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -303,7 +304,6 @@ public class ThefinalGame extends Application {
 					sSpiel[j][i].setText("" + gm.getFertigesfeld(j, i));
 				}
 				if (gm.getAnfang(j, i) == true) {
-					sSpiel[j][i].setStyle("-fx-background-image: url('Meme1.png')");
 					sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 				} else {
 					sSpiel[j][i].setOnAction(new EventHandler<ActionEvent>() {

@@ -32,7 +32,7 @@ import javafx.scene.layout.GridPane;
 
 public class Optionen extends Dialog<ButtonType> {
 
-	String notAllowed = "HIJKLMNOPQRSTUVWXYZÜÖÄ";
+	String notAllowed = "HIJKLMNOPQRSTUVWXYZÜÖÄ!\"§$%&/()=?`²³{[]}\\´^°<>|,.-;:_#+*'~@€";
 	// Farbe in hexadezimal
 	String hS = "FFFFFF";
 	String bS = "000000";
@@ -243,7 +243,7 @@ public class Optionen extends Dialog<ButtonType> {
 		this.onCloseRequestProperty();
 		this.getDialogPane().getButtonTypes().setAll(buttonTypeOk, buttonTypeReset, buttonTypeBack);
 		Optional<ButtonType> result = this.showAndWait();
-		if (result.get() == buttonTypeOk) {
+		if (result.get() == buttonTypeOk && getColorFromText(hTf) && getColorFromText(bTf) && getColorFromText(fTf)) {
 			DataOutputStream dos;
 			String path = "Settings/settings.dat";
 			Paths.get(path);
@@ -264,7 +264,6 @@ public class Optionen extends Dialog<ButtonType> {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		} else if (result.get() == buttonTypeReset) {
 			DataOutputStream dos;
 			String path = "Settings/settings.dat";
@@ -289,10 +288,33 @@ public class Optionen extends Dialog<ButtonType> {
 			bTf.setText("000000");
 			fTf.setText("C3C3C3");
 			this.showAndWait();
+		} else {
+			if (getColorFromText(hTf) == false) {
+				Alert a = new Alert(AlertType.INFORMATION);
+				a.setTitle("Geht nicht");
+				a.setHeaderText(hTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
+				a.setContentText("");
+				hTf.requestFocus();
+				a.show();
+			} else if (getColorFromText(bTf) == false) {
+				Alert a = new Alert(AlertType.INFORMATION);
+				a.setTitle("Geht nicht");
+				a.setHeaderText(bTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
+				a.setContentText("");
+				bTf.requestFocus();
+				a.show();
+			} else if (getColorFromText(fTf) == false) {
+				Alert a = new Alert(AlertType.INFORMATION);
+				a.setTitle("Geht nicht");
+				a.setHeaderText(fTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
+				a.setContentText("");
+				fTf.requestFocus();
+				a.show();
+			}
 		}
 	}
 
-	public void getColorFromText(TextField feld) {
+	public boolean getColorFromText(TextField feld) {
 		String hexa = "";
 		int aIndex = 0;
 		if (feld.getText().length() < 6) {
@@ -341,15 +363,10 @@ public class Optionen extends Dialog<ButtonType> {
 				fCb.getSelectionModel().select(aIndex);
 			}
 		}
-		if (feld.getText() != null) {
-			Alert a = new Alert(AlertType.INFORMATION);
-			a.setTitle("Geht nicht");
-			a.setHeaderText(feld.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
-			a.setContentText("");
-			feld.requestFocus();
-			a.showAndWait();
+		if (validHexacode(feld.getText()) == false) {
+			return false;
 		}
-
+		return true;
 	}
 
 	public void selectTf(TextField tf, String newValue) {
@@ -379,9 +396,10 @@ public class Optionen extends Dialog<ButtonType> {
 	}
 
 	public boolean validHexacode(String code) {
-		for (int e = 0; e < 6; ++e) {
+		for (int e = 0; e < code.length(); ++e) {
 			for (int i = 0; i < notAllowed.length(); ++i) {
-				if (notAllowed.substring(i, i + 1).equalsIgnoreCase(code.substring(e, e+1))) {
+				if (notAllowed.substring(i, i + 1).equalsIgnoreCase(code.substring(e, e + 1))) {
+					System.out.println(code);
 					return false;
 				}
 			}

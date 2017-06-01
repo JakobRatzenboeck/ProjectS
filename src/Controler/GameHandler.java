@@ -1,4 +1,5 @@
-package Gui;
+package Controler;
+import Gui.ThefinalGame;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
