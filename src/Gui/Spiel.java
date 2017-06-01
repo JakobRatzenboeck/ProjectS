@@ -26,6 +26,9 @@ public class Spiel extends Application {
 	final FileChooser fileChooser = new FileChooser();
 	private Stage stage;
 	
+	public Spiel() {
+	}
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -110,14 +113,10 @@ public class Spiel extends Application {
 			primaryStage.centerOnScreen();
 			primaryStage.getIcons().add(new Image("JJGames.png"));
 			primaryStage.setScene(scene);
-			primaryStage.show();			
+			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public static void main(String[] args) {
-		launch(args);
 	}
 	
 	private static void configureFileChooser(final FileChooser fileChooser) {

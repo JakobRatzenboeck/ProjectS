@@ -14,55 +14,54 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.effect.BlendMode;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class ThefinalGame extends Application {
 
+	private Label timerH = new Label("00");
+	private Label timerM = new Label("00");
+	private Label timerS = new Label("00");
 	private ToggleButton hilfe;
 	private Button[][] sSpiel = new Button[9][9];
 	private ToggleButton[] butns = new ToggleButton[9];
 	private int now;
 	private Game gm;
+	private Timer timer;
 
 	final FileChooser fileChooser = new FileChooser();
 	final GameHandler gh = new GameHandler(this);
 	private Stage stage;
 
 	private String loadpath;
-	private String hNS = "";
-	private String bNS = "";
-	private String fNS = "";
 	private String hS = "";
 	private String bS = "";
 	private String fS = "";
 
 	public ThefinalGame(int delete, Stage primaryStage) {
 		gm = new Game(delete);
+		timer = new Timer(this, 0, 0, 0);
 		try {
 			start(primaryStage);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -73,7 +72,6 @@ public class ThefinalGame extends Application {
 			loadpath = source.getPath();
 			start(primaryStage);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -81,6 +79,7 @@ public class ThefinalGame extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		load();
+		timer.start();
 		FlowPane root = new FlowPane();
 		Scene scene = new Scene(root, 600, 800);
 		primaryStage.setTitle("Sudoku");
@@ -93,12 +92,43 @@ public class ThefinalGame extends Application {
 		MenuItem opt = new MenuItem("Optionen");
 
 		neu.setOnAction(ActionEvent -> {
-			Spiel s = new Spiel();
 			try {
-				s.start(new Stage());
-				primaryStage.close();
+				if (loadpath == null) {
+					ButtonType buttonTypeOne = new ButtonType("Speichern");
+					ButtonType buttonTypeTwo = new ButtonType("Nicht speichern");
+					ButtonType buttonTypeThree = new ButtonType("Abbrechen");
+					Alert info = new Alert(AlertType.CONFIRMATION);
+					info.setTitle("Ungespeichertes Spiel");
+					info.setHeaderText("Wollen sie das derzeitige Sudoku speichern?");
+					info.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
+					Optional<ButtonType> result = info.showAndWait();
+					if (result.get() == buttonTypeOne) {
+						try {
+							gm.save();
+							timer.terminate();
+							Spiel s = new Spiel();
+							s.start(new Stage());
+							primaryStage.close();
+							info.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else if (result.get() == buttonTypeTwo) {
+						timer.terminate();
+						Spiel s = new Spiel();
+						s.start(new Stage());
+						primaryStage.close();
+						info.close();
+					} else if (result.get() == buttonTypeThree) {
+						info.close();
+					}
+				} else {
+					timer.terminate();
+					Spiel s = new Spiel();
+					s.start(new Stage());
+					primaryStage.close();
+				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -114,7 +144,6 @@ public class ThefinalGame extends Application {
 					loadpath = "savedGames/" + dtf.format(localDatetime) + "_Sudoku.dat";
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		});
@@ -142,7 +171,6 @@ public class ThefinalGame extends Application {
 
 						info.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} else if (result.get() == buttonTypeTwo) {
@@ -193,9 +221,8 @@ public class ThefinalGame extends Application {
 		adds.setMaxSize(1000, 50);
 
 		hilfe = new ToggleButton();
-		Image resetP = new Image("reset_45.png");
 		Button reset = new Button();
-		reset.setGraphic(new ImageView(resetP));
+		reset.setStyle("-fx-background-image: url('reset_50.png')");
 
 		hilfe.setOnAction(new EventHandler<ActionEvent>() {
 
@@ -207,7 +234,7 @@ public class ThefinalGame extends Application {
 							if (gm.getAnfang(j, i)) {
 								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 							} else {
-								sSpiel[j][i].setStyle("-fx-border-color: #");
+								sSpiel[j][i].setStyle("-fx-border-color: None");
 							}
 						}
 					}
@@ -236,7 +263,7 @@ public class ThefinalGame extends Application {
 					for (int j = 0; j < 9; ++j) {
 						if (gm.getAnfang(j, i) == false) {
 							sSpiel[j][i].setText("");
-							sSpiel[j][i].setStyle("-fx-background-color: #");
+							sSpiel[j][i].setStyle("-fx-border-color: None");
 							gm.setFertigesfeld(j, i, 0);
 
 						}
@@ -244,11 +271,24 @@ public class ThefinalGame extends Application {
 				}
 			}
 		});
-
+		timerH.setMinSize(12, 50);
+		timerM.setMinSize(12, 50);
+		timerS.setMinSize(102, 50);
 		hilfe.setMinSize(50, 50);
-		reset.setMinSize(50, 50);
+		reset.setMinSize(49, 50);
 
-		adds.getChildren().addAll(hilfe, reset);
+		Label d = new Label(":");
+		Label d2 = new Label(":");
+		d.setMinSize(2, 50);
+		d2.setMinSize(2, 50);
+
+		adds.getChildren().add(timerH);
+		adds.getChildren().add(d);
+		adds.getChildren().add(timerM);
+		adds.getChildren().add(d2);
+		adds.getChildren().add(timerS);
+		adds.getChildren().add(hilfe);
+		adds.getChildren().add(reset);
 
 		// Sudoku Feld
 		FlowPane sFeld = new FlowPane();
@@ -263,13 +303,13 @@ public class ThefinalGame extends Application {
 					sSpiel[j][i].setText("" + gm.getFertigesfeld(j, i));
 				}
 				if (gm.getAnfang(j, i) == true) {
+					sSpiel[j][i].setStyle("-fx-background-image: url('Meme1.png')");
 					sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 				} else {
 					sSpiel[j][i].setOnAction(new EventHandler<ActionEvent>() {
 
 						@Override
 						public void handle(ActionEvent event) {
-							int full = 0;
 							for (int i = 0; i < 9; ++i) {
 								for (int j = 0; j < 9; ++j) {
 									if (sSpiel[j][i].isFocused()) {
@@ -278,12 +318,14 @@ public class ThefinalGame extends Application {
 											if (gm.getAnfang(j, i)) {
 												sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 											} else {
-												sSpiel[j][i].setStyle("-fx-border-color: #");
+												sSpiel[j][i].setStyle("-fx-border-color: None");
 											}
 											gm.setFertigesfeld(j, i, 0);
 										} else {
 											if (now != 0) {
-												sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+												if (hilfe.isSelected()) {
+													sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+												}
 												sSpiel[j][i].setText("" + now);
 											}
 											gm.setFertigesfeld(j, i, now);
@@ -292,12 +334,14 @@ public class ThefinalGame extends Application {
 								}
 							}
 							if (gm.finished()) {
-
+								timer.terminate();
 								ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.CANCEL_CLOSE);
 								Alert meldung = new Alert(AlertType.INFORMATION);
 								meldung.setTitle("Eilmeldung");
 								meldung.setHeaderText("Sie haben gewonnen");
-								meldung.setContentText("Zurück zum Startscreen");
+								meldung.setContentText(
+										"Gebrauchte Zeit || Stunde : Minute : Sekunde || " + timerH.getText() + ":"
+												+ timerM.getText() + ":" + (Integer.parseInt(timerS.getText()) + 1));
 								meldung.getDialogPane().getButtonTypes().setAll(buttonTypeOk);
 								Optional<ButtonType> result = meldung.showAndWait();
 								if (result.get() == buttonTypeOk) {
@@ -366,7 +410,7 @@ public class ThefinalGame extends Application {
 				int i = 0; i < 9; ++i) {
 			HBox.setMargin(butns[i], new Insets(50, 12, 0, 12));
 		}
-		FlowPane.setMargin(adds, new Insets(2.5, 0, 2.5, 486));
+		FlowPane.setMargin(adds, new Insets(2.5, 0, 2.5, 275));
 		FlowPane.setMargin(sFeld, new Insets(5, 66, 30, 66));
 		FlowPane.setMargin(num, new Insets(0, 75, 0, 75));
 
@@ -380,18 +424,28 @@ public class ThefinalGame extends Application {
 		primaryStage.getIcons().add(new Image("JJGames.png"));
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		primaryStage.setOnHiding(new EventHandler<WindowEvent>() {
+
+			@Override
+			public void handle(WindowEvent event) {
+				Platform.runLater(new Runnable() {
+
+					@Override
+					public void run() {
+						timer.terminate();
+						primaryStage.close();
+					}
+				});
+			}
+		});
 	}
 
 	public void load() throws IOException {
 		DataInputStream dis = new DataInputStream(new FileInputStream(new File("Settings/settings.dat")));
-		hNS = dis.readUTF();
-		bNS = dis.readUTF();
-		fNS = dis.readUTF();
 		hS = dis.readUTF();
 		bS = dis.readUTF();
 		fS = dis.readUTF();
 		dis.readDouble();
-		dis.readBoolean();
 		dis.close();
 	}
 
@@ -403,18 +457,34 @@ public class ThefinalGame extends Application {
 	}
 
 	/**
-	 * @param sSpiel
-	 *            the sSpiel to set
-	 */
-	private void setsSpiel(Button[][] sSpiel) {
-		this.sSpiel = sSpiel;
-	}
-
-	/**
 	 * @return the butns
 	 */
 	public ToggleButton[] getButns() {
 		return butns;
+	}
+
+	/**
+	 * @param timerH
+	 *            the timerH to set
+	 */
+	public void setTimerH(String h) {
+		timerH.setText(h);
+	}
+
+	/**
+	 * @param timerM
+	 *            the timerM to set
+	 */
+	public void setTimerM(String m) {
+		timerM.setText(m);
+	}
+
+	/**
+	 * @param timerS
+	 *            the timerS to set
+	 */
+	public void setTimerS(String s) {
+		timerS.setText(s);
 	}
 
 	public void selectButns(int bunts) {
@@ -438,14 +508,6 @@ public class ThefinalGame extends Application {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @param butns
-	 *            the butns to set
-	 */
-	private void setButns(ToggleButton[] butns) {
-		this.butns = butns;
 	}
 
 	private static void configureFileChooser(final FileChooser fileChooser) {
