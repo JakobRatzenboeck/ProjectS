@@ -45,8 +45,8 @@ public class Optionen extends Dialog<ButtonType> {
 	boolean tVal = false;
 
 	ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.LEFT);
-	ButtonType buttonTypeReset = new ButtonType("Reset");
-	ButtonType buttonTypeBack = new ButtonType("Back", ButtonData.CANCEL_CLOSE);
+	ButtonType buttonTypeReset = new ButtonType("Zurückstellen");
+	ButtonType buttonTypeBack = new ButtonType("Zurück", ButtonData.CANCEL_CLOSE);
 	TabPane tPane = new TabPane();
 	Tab allgemein = new Tab("Allgemein");
 	GridPane allgemeinP = new GridPane();
@@ -65,18 +65,19 @@ public class Optionen extends Dialog<ButtonType> {
 	Label f = new Label("Felder: ");
 	ComboBox<String> fCb = new ComboBox<String>(options);
 
+	Label mString = new Label("Music-File: ");
+	TextField mStringTf = new TextField();
+	
+	Label m = new Label("Musiklautstärke:");
+	Slider slider = new Slider();
+
+	ToggleButton mute = new ToggleButton();
+
 	// fortgeschrittene sachen
 	TextField hTf = new TextField("FFFFFF");
 	TextField bTf = new TextField("000000");
 	TextField fTf = new TextField("C3C3C3");
-	
-	Label mString = new Label("Music-File: ");
-	TextField mStringTf = new TextField("");
-	
-	Label m = new Label("Musiklautstärke: ");
-	Slider slider = new Slider();
-
-	ToggleButton mute = new ToggleButton();
+	TextField lPath = new TextField();
 
 	public Optionen(int height, int width) {
 		try {
@@ -244,9 +245,11 @@ public class Optionen extends Dialog<ButtonType> {
 		fortgP.add(bTf, 2, 2);
 		fortgP.add(new Label("Felder:		# "), 1, 3);
 		fortgP.add(fTf, 2, 3);
-		fortgP.add(m, 1, 4);
-		fortgP.add(slider, 2, 4);
-		fortgP.add(mute, 3, 4);
+		fortgP.add(mString, 1, 4);
+		fortgP.add(mStringTf, 2, 4);
+		fortgP.add(m, 1, 5);
+		fortgP.add(slider, 2, 5);
+		fortgP.add(mute, 3, 5);
 
 		tPane.setPrefHeight(height);
 		tPane.setPrefWidth(width);
@@ -290,6 +293,7 @@ public class Optionen extends Dialog<ButtonType> {
 				dos.writeUTF("000000");
 				dos.writeUTF("C3C3C3");
 				dos.writeDouble(40);
+				dos.writeBoolean(false);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

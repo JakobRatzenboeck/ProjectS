@@ -61,7 +61,8 @@ public class Main extends Application {
 				public void handle(ActionEvent event) {
 					Alert info = new Alert(AlertType.INFORMATION);
 					info.setTitle("JJ Games and more");
-					info.setContentText("Made By Jakob Ratzenböck , pfusched by Johannes Strobl");
+					info.setHeaderText("Gemacht von Jakob Ratzenböck und unterstützt von Johannes Strobl");
+					info.setContentText("");
 					info.show();
 				}
 			});

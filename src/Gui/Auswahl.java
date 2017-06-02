@@ -92,15 +92,15 @@ public class Auswahl extends Application {
 				}
 			});
 			
-			easy.setMaxSize(70, 20);
+			easy.setMaxSize(90, 40);
 			easy.setTranslateX(120);
 			easy.setTranslateY(70);
 
-			normal.setMaxSize(70, 20);
+			normal.setMaxSize(90, 40);
 			normal.setTranslateX(170);
 			normal.setTranslateY(70);
 
-			hard.setMaxSize(70, 20);
+			hard.setMaxSize(90, 40);
 			hard.setTranslateX(220);
 			hard.setTranslateY(70);
 
