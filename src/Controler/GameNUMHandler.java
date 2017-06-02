@@ -1,14 +1,15 @@
 package Controler;
-import Gui.ThefinalGame;
+import Gui.Game;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class GameHandler implements EventHandler<KeyEvent> {
+public class GameNUMHandler implements EventHandler<KeyEvent> {
 
-	private final ThefinalGame spiel;
+	private final Game spiel;
 	
-	public GameHandler(ThefinalGame spiel) {
+	public GameNUMHandler(Game spiel) {
 		this.spiel = spiel;
 	}
 

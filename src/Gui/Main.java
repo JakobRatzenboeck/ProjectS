@@ -53,7 +53,7 @@ public class Main extends Application {
 			Button settings = new Button("Einstellung");
 
 			end.setOnAction(ActionEvent -> Platform.exit());
-			Spiel s = new Spiel();
+			Auswahl s = new Auswahl();
 			start.setOnAction(ActionEvent -> s.start(primaryStage));
 
 			credits.setOnAction(new EventHandler<ActionEvent>() {

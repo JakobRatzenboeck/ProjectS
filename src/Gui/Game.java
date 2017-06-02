@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import Controler.GameHandler;
-import Model.Game;
+import Controler.AddsHandler;
+import Controler.GameNUMHandler;
+import Model.Start;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -28,7 +29,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -36,20 +36,28 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class ThefinalGame extends Application {
+public class Game extends Application {
+
+	private MenuBar mBar = new MenuBar();
+	private Menu file = new Menu("Spiel");
+	private MenuItem neu = new MenuItem("Neu");
+	private MenuItem save = new MenuItem("Speichern");
+	private MenuItem load = new MenuItem("Laden");
+	private MenuItem opt = new MenuItem("Optionen");
 
 	private Label timerH = new Label("00");
 	private Label timerM = new Label("00");
 	private Label timerS = new Label("00");
 	private ToggleButton hilfe;
+	private Button reset;
 	private Button[][] sSpiel = new Button[9][9];
 	private ToggleButton[] butns = new ToggleButton[9];
 	private int now;
-	private Game gm;
-	private Timer timer;
+	private Start st;
 
 	final FileChooser fileChooser = new FileChooser();
-	final GameHandler gh = new GameHandler(this);
+	final AddsHandler gbh = new AddsHandler(this);
+	final GameNUMHandler gh = new GameNUMHandler(this);
 	private Stage stage;
 
 	private String loadpath;
@@ -57,21 +65,22 @@ public class ThefinalGame extends Application {
 	private String bS = "";
 	private String fS = "";
 
-	public ThefinalGame(int delete, Stage primaryStage) {
-		gm = new Game(delete);
-		timer = new Timer(this, 0, 0, 0);
+	public Game(int delete) {
+		st = new Start(delete, this);
+		st.getTimer().start();
 		try {
-			start(primaryStage);
+			start(new Stage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public ThefinalGame(File source, Stage primaryStage) {
-		gm = new Game(source);
+	public Game(File source) {
+		st = new Start(source, this);
+		st.getTimer().start();
 		try {
 			loadpath = source.getPath();
-			start(primaryStage);
+			start(new Stage());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -79,135 +88,39 @@ public class ThefinalGame extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		load();
-		timer.start();
+		this.stage = primaryStage;
+		loadSettings();
 		FlowPane root = new FlowPane();
 		Scene scene = new Scene(root, 600, 800);
 		primaryStage.setTitle("Sudoku");
 
-		MenuBar mBar = new MenuBar();
-		Menu file = new Menu("Spiel");
-		MenuItem neu = new MenuItem("Neu");
-		MenuItem save = new MenuItem("Speichern");
-		MenuItem load = new MenuItem("Laden");
-		MenuItem opt = new MenuItem("Optionen");
+		neu.setOnAction(new AddsHandler(this));
 
-		neu.setOnAction(ActionEvent -> {
-			try {
-				if (loadpath == null) {
-					ButtonType buttonTypeOne = new ButtonType("Speichern");
-					ButtonType buttonTypeTwo = new ButtonType("Nicht speichern");
-					ButtonType buttonTypeThree = new ButtonType("Abbrechen");
-					Alert info = new Alert(AlertType.CONFIRMATION);
-					info.setTitle("Ungespeichertes Spiel");
-					info.setHeaderText("Wollen sie das derzeitige Sudoku speichern?");
-					info.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
-					Optional<ButtonType> result = info.showAndWait();
-					if (result.get() == buttonTypeOne) {
-						try {
-							gm.save();
-							timer.terminate();
-							Spiel s = new Spiel();
-							s.start(new Stage());
-							primaryStage.close();
-							info.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					} else if (result.get() == buttonTypeTwo) {
-						timer.terminate();
-						Spiel s = new Spiel();
-						s.start(new Stage());
-						primaryStage.close();
-						info.close();
-					} else if (result.get() == buttonTypeThree) {
-						info.close();
-					}
-				} else {
-					timer.terminate();
-					Spiel s = new Spiel();
-					s.start(new Stage());
-					primaryStage.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+		save.setOnAction(new AddsHandler(this));
 
-		save.setOnAction(ActionEvent -> {
-			try {
-				if (loadpath != null) {
-					gm.save(loadpath);
-				} else {
-					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH.mm");
-					LocalDateTime localDatetime = LocalDateTime.now();
-					gm.save();
-					loadpath = "savedGames/" + dtf.format(localDatetime) + "_Sudoku.dat";
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		});
-
-		load.setOnAction(ActionEvent -> {
-			System.out.println(loadpath);
-			if (loadpath == null) {
-				ButtonType buttonTypeOne = new ButtonType("Speichern");
-				ButtonType buttonTypeTwo = new ButtonType("Nicht speichern");
-				ButtonType buttonTypeThree = new ButtonType("Abbrechen");
-				Alert info = new Alert(AlertType.CONFIRMATION);
-				info.setTitle("Ungespeichertes Spiel");
-				info.setHeaderText("Wollen sie das derzeitige Sudoku speichern?");
-				info.getButtonTypes().setAll(buttonTypeOne, buttonTypeTwo, buttonTypeThree);
-				Optional<ButtonType> result = info.showAndWait();
-				if (result.get() == buttonTypeOne) {
-					try {
-						gm.save();
-						stage = primaryStage;
-						configureFileChooser(fileChooser);
-						File file1 = fileChooser.showOpenDialog(primaryStage);
-						if (file != null) {
-							openFile(file1);
-						}
-
-						info.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} else if (result.get() == buttonTypeTwo) {
-					stage = primaryStage;
-					configureFileChooser(fileChooser);
-					File file1 = fileChooser.showOpenDialog(primaryStage);
-					if (file != null) {
-						openFile(file1);
-					}
-
-					info.close();
-				} else if (result.get() == buttonTypeThree) {
-					info.close();
-				}
-			} else {
-				stage = primaryStage;
-				configureFileChooser(fileChooser);
-				File file1 = fileChooser.showOpenDialog(primaryStage);
-				if (file != null) {
-					openFile(file1);
-				}
-			}
-		});
+		load.setOnAction(new AddsHandler(this));
 
 		opt.setOnAction(ActionEvent -> {
 			new Optionen(800, 600);
+			try {
+				if (loadpath != null) {
+				st.save(loadpath);
+				} else {
+				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH.mm");
+				LocalDateTime localDatetime = LocalDateTime.now();
+				st.save();
+				loadpath = "savedGames/" + dtf.format(localDatetime) + "_Sudoku.dat";
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			st.getTimer().terminate();
+			new Game(new File(loadpath));
+			primaryStage.close();
 		});
 
 		file.getItems().addAll(neu, save, load, opt);
-		// Menu help = new Menu("Hilfe");
-		// MenuItem quickHelp = new MenuItem("Quickfix");
-		//
-		// quickHelp.setOnAction(ActionEvent -> Platform.exit());
-		//
-		// MenuItem about = new MenuItem("Über");
-		// help.getItems().addAll(quickHelp, about);
 
 		mBar.getMenus().addAll(file);
 		mBar.setPrefHeight(10);
@@ -222,56 +135,13 @@ public class ThefinalGame extends Application {
 		adds.setMaxSize(1000, 50);
 
 		hilfe = new ToggleButton();
-		Button reset = new Button();
+		reset = new Button();
 		reset.setStyle("-fx-background-image: url('reset_50.png')");
 
-		hilfe.setOnAction(new EventHandler<ActionEvent>() {
+		hilfe.setOnAction(new AddsHandler(this));
 
-			@Override
-			public void handle(ActionEvent event) {
-				if (!hilfe.isSelected()) {
-					for (int i = 0; i < 9; ++i) {
-						for (int j = 0; j < 9; ++j) {
-							if (gm.getAnfang(j, i)) {
-								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-							} else {
-								sSpiel[j][i].setStyle("-fx-border-color: None");
-							}
-						}
-					}
-					hilfe.setStyle("-fx-color: #F3F3F3");
-				} else {
-					for (int i = 0; i < 9; ++i) {
-						for (int j = 0; j < 9; ++j) {
-							if (gm.getFertigesfeld(j, i) != 0) {
-								if (gm.getFertigesfeld(j, i) == now) {
-									sSpiel[j][i].setStyle("-fx-color: #00A9D3");
-								}
-							}
-						}
-					}
-					hilfe.setStyle("-fx-color: #00A9D3");
-				}
-			}
+		reset.setOnAction(new AddsHandler(this));
 
-		});
-
-		reset.setOnAction(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				for (int i = 0; i < 9; ++i) {
-					for (int j = 0; j < 9; ++j) {
-						if (gm.getAnfang(j, i) == false) {
-							sSpiel[j][i].setText("");
-							sSpiel[j][i].setStyle("-fx-border-color: None");
-							gm.setFertigesfeld(j, i, 0);
-
-						}
-					}
-				}
-			}
-		});
 		timerH.setMinSize(12, 50);
 		timerM.setMinSize(12, 50);
 		timerS.setMinSize(102, 50);
@@ -300,10 +170,10 @@ public class ThefinalGame extends Application {
 		for (int i = 0; i < 9; ++i) {
 			for (int j = 0; j < 9; ++j) {
 				sSpiel[j][i] = new Button();
-				if (gm.getFertigesfeld(j, i) != 0) {
-					sSpiel[j][i].setText("" + gm.getFertigesfeld(j, i));
+				if (st.getFertigesfeld(j, i) != 0) {
+					sSpiel[j][i].setText("" + st.getFertigesfeld(j, i));
 				}
-				if (gm.getAnfang(j, i) == true) {
+				if (st.getAnfang(j, i) == true) {
 					sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 				} else {
 					sSpiel[j][i].setOnAction(new EventHandler<ActionEvent>() {
@@ -315,12 +185,12 @@ public class ThefinalGame extends Application {
 									if (sSpiel[j][i].isFocused()) {
 										if (sSpiel[j][i].getText().equals("" + now)) {
 											sSpiel[j][i].setText("");
-											if (gm.getAnfang(j, i)) {
+											if (st.getAnfang(j, i)) {
 												sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 											} else {
 												sSpiel[j][i].setStyle("-fx-border-color: None");
 											}
-											gm.setFertigesfeld(j, i, 0);
+											st.setFertigesfeld(j, i, 0);
 										} else {
 											if (now != 0) {
 												if (hilfe.isSelected()) {
@@ -328,13 +198,13 @@ public class ThefinalGame extends Application {
 												}
 												sSpiel[j][i].setText("" + now);
 											}
-											gm.setFertigesfeld(j, i, now);
+											st.setFertigesfeld(j, i, now);
 										}
 									}
 								}
 							}
-							if (gm.finished()) {
-								timer.terminate();
+							if (st.finished()) {
+								st.getTimer().terminate();
 								ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.CANCEL_CLOSE);
 								Alert meldung = new Alert(AlertType.INFORMATION);
 								meldung.setTitle("Eilmeldung");
@@ -345,7 +215,7 @@ public class ThefinalGame extends Application {
 								meldung.getDialogPane().getButtonTypes().setAll(buttonTypeOk);
 								Optional<ButtonType> result = meldung.showAndWait();
 								if (result.get() == buttonTypeOk) {
-									gm.fertig();
+									st.fertig();
 									Main m = new Main(400, 400);
 									m.start(new Stage());
 									primaryStage.close();
@@ -379,7 +249,7 @@ public class ThefinalGame extends Application {
 			for (int u = 0; u < 9; ++u) {
 				for (int j = 0; j < 9; ++j) {
 					for (int h = 0; h < 9; ++h) {
-						if (gm.getFertigesfeld(j, u) == h) {
+						if (st.getFertigesfeld(j, u) == h) {
 
 						}
 					}
@@ -417,7 +287,7 @@ public class ThefinalGame extends Application {
 		root.setStyle("-fx-background-color: #" + hS + "");
 		root.getChildren().addAll(mBar, adds, sFeld, num);
 
-		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new GameHandler(this));
+		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new GameNUMHandler(this));
 		primaryStage.setMinWidth(600);
 		primaryStage.setMinHeight(800);
 		primaryStage.centerOnScreen();
@@ -432,7 +302,7 @@ public class ThefinalGame extends Application {
 
 					@Override
 					public void run() {
-						timer.terminate();
+						st.getTimer().terminate();
 						primaryStage.close();
 					}
 				});
@@ -440,13 +310,46 @@ public class ThefinalGame extends Application {
 		});
 	}
 
-	public void load() throws IOException {
+	public void loadSettings() throws IOException {
 		DataInputStream dis = new DataInputStream(new FileInputStream(new File("Settings/settings.dat")));
 		hS = dis.readUTF();
 		bS = dis.readUTF();
 		fS = dis.readUTF();
 		dis.readDouble();
 		dis.close();
+	}
+
+	public void selectButns(int bunts) {
+		now = bunts + 1;
+		butns[bunts].setSelected(true);
+		butns[bunts].requestFocus();
+		if (hilfe.isSelected()) {
+			for (int i = 0; i < 9; ++i) {
+				for (int j = 0; j < 9; ++j) {
+					if (st.getFertigesfeld(j, i) != 0) {
+						if (st.getFertigesfeld(j, i) == now) {
+							sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+						} else {
+							if (st.getAnfang(j, i)) {
+								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+							} else {
+								sSpiel[j][i].setStyle("-fx-border-color: None");
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public static void configureFileChooser(final FileChooser fileChooser) {
+		fileChooser.setTitle("View Sudokus");
+		fileChooser.setInitialDirectory(
+				new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "savedGames"));
+	}
+
+	public void openFile(File file) {
+		new Game(file);
 	}
 
 	/**
@@ -487,36 +390,172 @@ public class ThefinalGame extends Application {
 		timerS.setText(s);
 	}
 
-	public void selectButns(int bunts) {
-		now = bunts + 1;
-		butns[bunts].setSelected(true);
-		butns[bunts].requestFocus();
-		if (hilfe.isSelected()) {
-			for (int i = 0; i < 9; ++i) {
-				for (int j = 0; j < 9; ++j) {
-					if (gm.getFertigesfeld(j, i) != 0) {
-						if (gm.getFertigesfeld(j, i) == now) {
-							sSpiel[j][i].setStyle("-fx-color: #00A9D3");
-						} else {
-							if (gm.getAnfang(j, i)) {
-								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-							} else {
-								sSpiel[j][i].setStyle("-fx-border-color: None");
-							}
-						}
-					}
-				}
-			}
-		}
+	/**
+	 * @return the timer
+	 */
+	public Timer getTimer() {
+		return st.getTimer();
 	}
 
-	private static void configureFileChooser(final FileChooser fileChooser) {
-		fileChooser.setTitle("View Sudokus");
-		fileChooser.setInitialDirectory(
-				new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "savedGames"));
+	/**
+	 * @param timer
+	 *            the timer to set
+	 */
+	private void setTimer(Timer timer) {
+		this.st.setTimer(timer);
 	}
 
-	private void openFile(File file) {
-		new ThefinalGame(file, stage);
+	/**
+	 * @return the loadpath
+	 */
+	public String getLoadpath() {
+		return loadpath;
 	}
+
+	/**
+	 * @param loadpath
+	 *            the loadpath to set
+	 */
+	public void setLoadpath(String loadpath) {
+		this.loadpath = loadpath;
+	}
+
+	/**
+	 * @return the neu
+	 */
+	public MenuItem getNeu() {
+		return neu;
+	}
+
+	/**
+	 * @param neu
+	 *            the neu to set
+	 */
+	private void setNeu(MenuItem neu) {
+		this.neu = neu;
+	}
+
+	/**
+	 * @return the save
+	 */
+	public MenuItem getSave() {
+		return save;
+	}
+
+	/**
+	 * @param save
+	 *            the save to set
+	 */
+	private void setSave(MenuItem save) {
+		this.save = save;
+	}
+
+	/**
+	 * @return the load
+	 */
+	public MenuItem getLoad() {
+		return load;
+	}
+
+	/**
+	 * @param load
+	 *            the load to set
+	 */
+	private void setLoad(MenuItem load) {
+		this.load = load;
+	}
+
+	/**
+	 * @return the gm
+	 */
+	public Start getSt() {
+		return st;
+	}
+
+	/**
+	 * @param gm
+	 *            the gm to set
+	 */
+	private void setSt(Start gm) {
+		this.st = gm;
+	}
+
+	/**
+	 * @return the stage
+	 */
+	public Stage getStage() {
+		return stage;
+	}
+
+	/**
+	 * @param stage
+	 *            the stage to set
+	 */
+	private void setStage(Stage stage) {
+		this.stage = stage;
+	}
+
+	/**
+	 * @return the fileChooser
+	 */
+	public FileChooser getFileChooser() {
+		return fileChooser;
+	}
+
+	/**
+	 * @return the hilfe
+	 */
+	public ToggleButton getHilfe() {
+		return hilfe;
+	}
+
+	/**
+	 * @param hilfe
+	 *            the hilfe to set
+	 */
+	private void setHilfe(ToggleButton hilfe) {
+		this.hilfe = hilfe;
+	}
+
+	/**
+	 * @return the now
+	 */
+	public int getNow() {
+		return now;
+	}
+
+	/**
+	 * @param now
+	 *            the now to set
+	 */
+	private void setNow(int now) {
+		this.now = now;
+	}
+
+	public Button getSSpiel(int x, int y) {
+		return sSpiel[x][y];
+	}
+
+	/**
+	 * @return the reset
+	 */
+	public Button getReset() {
+		return reset;
+	}
+
+	/**
+	 * @param reset
+	 *            the reset to set
+	 */
+	private void setReset(Button reset) {
+		this.reset = reset;
+	}
+
+	/**
+	 * @return the fS
+	 */
+	public String getfS() {
+		return fS;
+	}
+
 }

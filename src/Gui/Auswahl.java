@@ -3,7 +3,7 @@ package Gui;
 import java.io.File;
 import java.util.Random;
 
-import Model.Game;
+import Model.Start;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -21,19 +21,19 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 
-public class Spiel extends Application {
+public class Auswahl extends Application {
 	
 	final FileChooser fileChooser = new FileChooser();
 	private Stage stage;
 	
-	public Spiel() {
+	public Auswahl() {
 	}
 	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
 			
-			ThefinalGame sudoku;
+			Start sudoku;
 			
 			Random r = new Random();			
 			
@@ -55,7 +55,8 @@ public class Spiel extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 					int q = r.nextInt(22) + 9;
-					new ThefinalGame(q, primaryStage);
+					new Game(q);
+					primaryStage.close();
 				}
 			});
 
@@ -64,7 +65,8 @@ public class Spiel extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 					int m = r.nextInt(11) + 31;
-					new ThefinalGame(m, primaryStage);
+					new Game(m);
+					primaryStage.close();
 				}
 			});
 
@@ -73,7 +75,8 @@ public class Spiel extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 					int h = r.nextInt(22) + 42;
-					new ThefinalGame(h, primaryStage);
+					new Game(h);
+					primaryStage.close();
 				}
 			});
 			
@@ -126,6 +129,6 @@ public class Spiel extends Application {
 	}
 
 	private void openFile(File file) {
-		new ThefinalGame(file, stage);
+		new Game(file);
 	}	
 }

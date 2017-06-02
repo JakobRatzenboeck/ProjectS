@@ -65,16 +65,18 @@ public class Optionen extends Dialog<ButtonType> {
 	Label f = new Label("Felder: ");
 	ComboBox<String> fCb = new ComboBox<String>(options);
 
-	Label m = new Label("Musiklautstärke:");
-	Slider slider = new Slider();
-
-	ToggleButton mute = new ToggleButton();
-
 	// fortgeschrittene sachen
 	TextField hTf = new TextField("FFFFFF");
 	TextField bTf = new TextField("000000");
 	TextField fTf = new TextField("C3C3C3");
-	TextField lPath = new TextField();
+	
+	Label mString = new Label("Music-File: ");
+	TextField mStringTf = new TextField("");
+	
+	Label m = new Label("Musiklautstärke: ");
+	Slider slider = new Slider();
+
+	ToggleButton mute = new ToggleButton();
 
 	public Optionen(int height, int width) {
 		try {
@@ -165,18 +167,23 @@ public class Optionen extends Dialog<ButtonType> {
 			public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
 				if (slider.getValue() >= 75) {
 					mute.setSelected(false);
+					tVal = false;
 					mute.setStyle("-fx-background-image: url('unmuted.png')");
 				} else if (slider.getValue() >= 50) {
 					mute.setSelected(false);
+					tVal = false;
 					mute.setStyle("-fx-background-image: url('unmuted2.png')");
 				} else if (slider.getValue() >= 25) {
 					mute.setSelected(false);
+					tVal = false;
 					mute.setStyle("-fx-background-image: url('unmuted1.png')");
 				} else if (slider.getValue() == 0) {
 					mute.setSelected(false);
+					tVal = false;
 					mute.setStyle("-fx-background-image: url('muted.png')");
 				} else {
 					mute.setSelected(false);
+					tVal = false;
 					mute.setStyle("-fx-background-image: url('unmuted0.png')");
 				}
 			}
@@ -208,18 +215,24 @@ public class Optionen extends Dialog<ButtonType> {
 					mute.setStyle("-fx-background-image: url('muted.png')");
 					sVal = slider.getValue();
 					slider.setValue(0);
+					tVal = true;
 				} else {
 					slider.setValue(sVal);
 					if (slider.getValue() >= 75) {
 						mute.setStyle("-fx-background-image: url('unmuted.png')");
+						tVal = false;
 					} else if (slider.getValue() >= 50) {
 						mute.setStyle("-fx-background-image: url('unmuted2.png')");
+						tVal = false;
 					} else if (slider.getValue() >= 25) {
 						mute.setStyle("-fx-background-image: url('unmuted1.png')");
+						tVal = false;
 					} else if (slider.getValue() == 0) {
 						mute.setStyle("-fx-background-image: url('muted.png')");
+						tVal = false;
 					} else {
 						mute.setStyle("-fx-background-image: url('unmuted0.png')");
+						tVal = false;
 					}
 				}
 			}
@@ -243,8 +256,11 @@ public class Optionen extends Dialog<ButtonType> {
 		this.onCloseRequestProperty();
 		this.getDialogPane().getButtonTypes().setAll(buttonTypeOk, buttonTypeReset, buttonTypeBack);
 		Optional<ButtonType> result = this.showAndWait();
-		if (result.get() == buttonTypeOk && getColorFromText(hTf) && getColorFromText(bTf) && getColorFromText(fTf)) {
+		if (result.get() == buttonTypeOk/* && getColorFromText(hTf) && getColorFromText(bTf) && getColorFromText(fTf)*/) {
 			DataOutputStream dos;
+			getColorFromText(hTf);
+			getColorFromText(bTf);
+			getColorFromText(fTf);
 			String path = "Settings/settings.dat";
 			Paths.get(path);
 			File f = new File(path);
@@ -255,11 +271,8 @@ public class Optionen extends Dialog<ButtonType> {
 				dos.writeUTF(hTf.getText().toUpperCase());
 				dos.writeUTF(bTf.getText().toUpperCase());
 				dos.writeUTF(fTf.getText().toUpperCase());
-				if (slider.getValue() != 0) {
-					dos.writeDouble(slider.getValue());
-				} else {
-					dos.writeDouble(sVal);
-				}
+				dos.writeDouble(sVal);
+				dos.writeBoolean(tVal);
 				dos.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -288,30 +301,29 @@ public class Optionen extends Dialog<ButtonType> {
 			bTf.setText("000000");
 			fTf.setText("C3C3C3");
 			this.showAndWait();
-		} else {
-			if (getColorFromText(hTf) == false) {
-				Alert a = new Alert(AlertType.INFORMATION);
-				a.setTitle("Geht nicht");
-				a.setHeaderText(hTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
-				a.setContentText("");
-				hTf.requestFocus();
-				a.show();
-			} else if (getColorFromText(bTf) == false) {
-				Alert a = new Alert(AlertType.INFORMATION);
-				a.setTitle("Geht nicht");
-				a.setHeaderText(bTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
-				a.setContentText("");
-				bTf.requestFocus();
-				a.show();
-			} else if (getColorFromText(fTf) == false) {
-				Alert a = new Alert(AlertType.INFORMATION);
-				a.setTitle("Geht nicht");
-				a.setHeaderText(fTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
-				a.setContentText("");
-				fTf.requestFocus();
-				a.show();
-			}
-		}
+		} 
+//		else if (getColorFromText(hTf) == false) {
+//			Alert a = new Alert(AlertType.INFORMATION);
+//			a.setTitle("Geht nicht");
+//			a.setHeaderText(hTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
+//			a.setContentText("");
+//			hTf.requestFocus();
+//			a.show();
+//		} else if (getColorFromText(bTf) == false) {
+//			Alert a = new Alert(AlertType.INFORMATION);
+//			a.setTitle("Geht nicht");
+//			a.setHeaderText(bTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
+//			a.setContentText("");
+//			bTf.requestFocus();
+//			a.show();
+//		} else if (getColorFromText(fTf) == false) {
+//			Alert a = new Alert(AlertType.INFORMATION);
+//			a.setTitle("Geht nicht");
+//			a.setHeaderText(fTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
+//			a.setContentText("");
+//			fTf.requestFocus();
+//			a.show();
+//		}
 	}
 
 	public boolean getColorFromText(TextField feld) {
@@ -413,6 +425,7 @@ public class Optionen extends Dialog<ButtonType> {
 		bS = dis.readUTF();
 		fS = dis.readUTF();
 		sVal = dis.readDouble();
+		tVal = dis.readBoolean();
 		dis.close();
 		hTf.setText(hS);
 		bTf.setText(bS);
@@ -420,5 +433,6 @@ public class Optionen extends Dialog<ButtonType> {
 		getColorFromText(hTf);
 		getColorFromText(bTf);
 		getColorFromText(fTf);
+		mute.setSelected(tVal);
 	}
 }

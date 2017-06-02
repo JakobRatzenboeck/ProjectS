@@ -3,6 +3,9 @@ package Gui;
 import javafx.application.Platform;
 
 public class Timer extends Thread {
+	
+	private Game game;
+	
 	private boolean terminate;
 	private int sec;
 	private int min;
@@ -10,10 +13,9 @@ public class Timer extends Thread {
 	private String secS;
 	private String minS;
 	private String hourS;
-	private ThefinalGame application;
 
-	public Timer(ThefinalGame ap, int s, int m, int h) {
-		this.application = ap;
+	public Timer(Game game, int s, int m, int h) {
+		this.game = game;
 		setSec(s);
 		setMin(m);
 		setHour(h);
@@ -43,19 +45,19 @@ public class Timer extends Thread {
 			Platform.runLater(new Runnable() {
 	            @Override public void run() {
 	    			if (secS.length() == 2) {
-	    				application.setTimerS("" + sec);
+	    				game.setTimerS("" + sec);
 	    			} else {
-	    				application.setTimerS("0" + sec);
+	    				game.setTimerS("0" + sec);
 	    			}
 	    			if (minS.length() == 2) {
-	    				application.setTimerM("" + min);
+	    				game.setTimerM("" + min);
 	    			} else {
-	    				application.setTimerM("0" + min);
+	    				game.setTimerM("0" + min);
 	    			}
 	    			if (hourS.length() == 2) {
-	    				application.setTimerH("" + hour);
+	    				game.setTimerH("" + hour);
 	    			} else {
-	    				application.setTimerH("0" + hour);
+	    				game.setTimerH("0" + hour);
 	    			}
 	            }
 	        });
@@ -70,7 +72,7 @@ public class Timer extends Thread {
 	/**
 	 * @return the sec
 	 */
-	private int getSec() {
+	public int getSec() {
 		return sec;
 	}
 
@@ -78,14 +80,14 @@ public class Timer extends Thread {
 	 * @param sec
 	 *            the sec to set
 	 */
-	private void setSec(int sec) {
+	public void setSec(int sec) {
 		this.sec = sec;
 	}
 
 	/**
 	 * @return the min
 	 */
-	private int getMin() {
+	public int getMin() {
 		return min;
 	}
 
@@ -93,14 +95,14 @@ public class Timer extends Thread {
 	 * @param min
 	 *            the min to set
 	 */
-	private void setMin(int min) {
+	public void setMin(int min) {
 		this.min = min;
 	}
 
 	/**
 	 * @return the hour
 	 */
-	private int getHour() {
+	public int getHour() {
 		return hour;
 	}
 
@@ -108,7 +110,7 @@ public class Timer extends Thread {
 	 * @param hour
 	 *            the hour to set
 	 */
-	private void setHour(int hour) {
+	public void setHour(int hour) {
 		this.hour = hour;
 	}
 

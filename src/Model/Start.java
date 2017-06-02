@@ -19,17 +19,24 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class Game {
+import Gui.Game;
+import Gui.Timer;
+
+public class Start {
 	Autogenerate ag;
+	Timer timer;
+	Game game;
+	
 	private int fertigesfeld[][] = new int[9][9];
 	private int feld[][] = new int[9][9];
 	private boolean[][] anfang = new boolean[9][9];
 	private String id = "";
 
 	// Ein nicht Fertiges Spiel abschliesen
-	public Game(File source) {
+	public Start(File source, Game game) {
+		this.game = game;
 		try {
-			load(source);
+			load(source, game);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -38,7 +45,8 @@ public class Game {
 	}
 
 	// Neues Spiel
-	public Game(int schwierigkeitsgrad) {
+	public Start(int schwierigkeitsgrad, Game game) {
+		this.game = game;
 		setId();
 		ag = new Autogenerate(schwierigkeitsgrad);
 		setFeld(ag.getFeld());
@@ -50,6 +58,7 @@ public class Game {
 				}
 			}
 		}
+		timer = new Timer(game, 0, 0, 0);
 	}
 
 	public void setId() {
@@ -123,7 +132,7 @@ public class Game {
 	}
 
 	// Lädt ein selbst ausgewältes file
-	public void load(File source) throws IOException {
+	public void load(File source, Game game) throws IOException {
 		DataInputStream dis = new DataInputStream(new FileInputStream(source));
 		try {
 			for (int i = 0; i < 81; ++i) {
@@ -144,6 +153,7 @@ public class Game {
 				boolean wert = dis.readBoolean();
 				anfang[x][y] = wert;
 			}
+			timer = new Timer(game, dis.readInt(), dis.readInt(), dis.readInt());
 		} catch (EOFException exc) {
 			dis.close();
 		}
@@ -190,8 +200,15 @@ public class Game {
 				dos.writeBoolean(anfang[j][i]);
 			}
 		}
+		timer.terminate();
+		dos.writeInt(timer.getSec());
+		dos.writeInt(timer.getMin());
+		dos.writeInt(timer.getHour());
+		timer = new Timer(game, timer.getSec(),timer.getMin(), timer.getHour());
 		dos.close();
 	}
+	
+	
 
 	public void save(String path) throws IOException {
 		feld = ag.getFeld();
@@ -221,35 +238,42 @@ public class Game {
 				dos.writeBoolean(anfang[j][i]);
 			}
 		}
+		timer.terminate();
+		dos.writeInt(timer.getSec());
+		dos.writeInt(timer.getMin());
+		dos.writeInt(timer.getHour());
+		timer = new Timer(game, timer.getSec(),timer.getMin(), timer.getHour());
 		dos.close();
 	}
+	
 
-	public void print() {
-		System.out.println(" ╔═══╦═══╦═══╦╦═══╦═══╦═══╦╦═══╦═══╦═══╗");
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				if (j == 3 || j == 6 || j == 9) {
-					System.out.print(" ║║ ");
-				} else {
-					System.out.print(" ║ ");
-				}
-				if (fertigesfeld[j][i] == 0) {
-					System.out.print(" ");
-				} else {
-					System.out.print(fertigesfeld[j][i]);
-				}
-			}
-			System.out.println(" ║");
-			if (i != 8) {
-				System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
-				if (i == 2 || i == 5) {
-					System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
-				}
-			}
-		}
-		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
-	}
+//	public void print() {
+//		System.out.println(" ╔═══╦═══╦═══╦╦═══╦═══╦═══╦╦═══╦═══╦═══╗");
+//		for (int i = 0; i < 9; i++) {
+//			for (int j = 0; j < 9; j++) {
+//				if (j == 3 || j == 6 || j == 9) {
+//					System.out.print(" ║║ ");
+//				} else {
+//					System.out.print(" ║ ");
+//				}
+//				if (fertigesfeld[j][i] == 0) {
+//					System.out.print(" ");
+//				} else {
+//					System.out.print(fertigesfeld[j][i]);
+//				}
+//			}
+//			System.out.println(" ║");
+//			if (i != 8) {
+//				System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
+//				if (i == 2 || i == 5) {
+//					System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
+//				}
+//			}
+//		}
+//		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
+//	}
 
+	
 	/**
 	 * @return the fertigesfeld
 	 */
@@ -301,4 +325,20 @@ public class Game {
 	public boolean getAnfang(int x, int y) {
 		return anfang[x][y];
 	}
+
+	/**
+	 * @return the timer
+	 */
+	public Timer getTimer() {
+		return timer;
+	}
+
+	/**
+	 * @param timer the timer to set
+	 */
+	public void setTimer(Timer timer) {
+		this.timer = timer;
+	}
+	
+	
 }
