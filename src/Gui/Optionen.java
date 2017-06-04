@@ -16,8 +16,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -28,6 +26,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 
 public class Optionen extends Dialog<ButtonType> {
@@ -43,15 +42,18 @@ public class Optionen extends Dialog<ButtonType> {
 
 	// Stummschaltung
 	boolean tVal = false;
+	boolean Memode = false;
 
 	ButtonType buttonTypeOk = new ButtonType("Ok", ButtonData.LEFT);
-	ButtonType buttonTypeReset = new ButtonType("Zurückstellen");
+	ButtonType buttonTypeReset = new ButtonType("Zurücksetzen");
 	ButtonType buttonTypeBack = new ButtonType("Zurück", ButtonData.CANCEL_CLOSE);
 	TabPane tPane = new TabPane();
 	Tab allgemein = new Tab("Allgemein");
 	GridPane allgemeinP = new GridPane();
 	Tab fortg = new Tab("Fortgeschrittene Einstellungen");
 	GridPane fortgP = new GridPane();
+	Tab me = new Tab("");
+	GridPane meP = new GridPane();
 
 	private ObservableList<String> options = FXCollections.observableArrayList("", "Schwarz", "Grau", "Weiß", "Blau",
 			"Rot", "Gelb", "Grün");
@@ -65,6 +67,8 @@ public class Optionen extends Dialog<ButtonType> {
 	Label f = new Label("Felder: ");
 	ComboBox<String> fCb = new ComboBox<String>(options);
 
+	ToggleButton MeMode = new ToggleButton("M");
+	
 	Label mString = new Label("Music-File: ");
 	TextField mStringTf = new TextField();
 	
@@ -88,6 +92,7 @@ public class Optionen extends Dialog<ButtonType> {
 
 		//
 		System.out.println(tVal);
+		System.out.println(Memode);
 
 		if (tVal) {
 			slider.setValue(0);
@@ -97,31 +102,29 @@ public class Optionen extends Dialog<ButtonType> {
 		}
 		mute.setStyle("-fx-background-image: url('muted.png')");
 
-		System.out
-				.println(hCb.getSelectionModel().getSelectedIndex() + " " + hCb.getSelectionModel().getSelectedItem());
-		System.out
-				.println(bCb.getSelectionModel().getSelectedIndex() + " " + bCb.getSelectionModel().getSelectedItem());
-		System.out
-				.println(fCb.getSelectionModel().getSelectedIndex() + " " + fCb.getSelectionModel().getSelectedItem());
-
 		this.setTitle("Optionen");
 		this.setHeight(800);
 		this.setWidth(600);
 		this.setResizable(false);
-		tPane.getTabs().addAll(allgemein, fortg);
+		tPane.getTabs().addAll(allgemein, fortg, me);
 		allgemein.setContent(allgemeinP);
 		allgemein.setClosable(false);
 		fortg.setContent(fortgP);
+		me.setContent(meP);
+		me.setClosable(false);
 		fortg.setClosable(false);
 		allgemeinP.setAlignment(Pos.CENTER);
 		fortgP.setAlignment(Pos.CENTER);
+		meP.setAlignment(Pos.CENTER);
+		
+		meP.add(MeMode, 1, 1);
 
 		h.setPrefHeight(20);
 		b.setPrefHeight(20);
 		f.setPrefHeight(20);
 		m.setPrefHeight(20);
 
-		hCb.getSelectionModel().select(3);
+//		hCb.getSelectionModel().select(3);
 		hCb.valueProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -129,7 +132,7 @@ public class Optionen extends Dialog<ButtonType> {
 				selectTf(hTf, newValue);
 			}
 		});
-		bCb.getSelectionModel().select(1);
+//		bCb.getSelectionModel().select(1);
 		bCb.valueProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -137,7 +140,7 @@ public class Optionen extends Dialog<ButtonType> {
 				selectTf(bTf, newValue);
 			}
 		});
-		fCb.getSelectionModel().select(2);
+//		fCb.getSelectionModel().select(2);
 		fCb.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue observable, String oldValue, String newValue) {
@@ -238,7 +241,6 @@ public class Optionen extends Dialog<ButtonType> {
 				}
 			}
 		});
-
 		fortgP.add(new Label("Hintergrund:	# "), 1, 1);
 		fortgP.add(hTf, 2, 1);
 		fortgP.add(new Label("Border:		# "), 1, 2);
@@ -246,6 +248,7 @@ public class Optionen extends Dialog<ButtonType> {
 		fortgP.add(new Label("Felder:		# "), 1, 3);
 		fortgP.add(fTf, 2, 3);
 		fortgP.add(mString, 1, 4);
+		mStringTf.tooltipProperty().set(new Tooltip("Abloluter pfad ist nötig (C:/User/music/Muster.mp3)"));
 		fortgP.add(mStringTf, 2, 4);
 		fortgP.add(m, 1, 5);
 		fortgP.add(slider, 2, 5);
@@ -274,8 +277,10 @@ public class Optionen extends Dialog<ButtonType> {
 				dos.writeUTF(hTf.getText().toUpperCase());
 				dos.writeUTF(bTf.getText().toUpperCase());
 				dos.writeUTF(fTf.getText().toUpperCase());
-				dos.writeDouble(sVal);
 				dos.writeBoolean(tVal);
+				dos.writeDouble(sVal);
+				dos.writeBoolean(MeMode.isSelected());
+				dos.writeUTF(mStringTf.getText());
 				dos.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -292,8 +297,10 @@ public class Optionen extends Dialog<ButtonType> {
 				dos.writeUTF("FFFFFF");
 				dos.writeUTF("000000");
 				dos.writeUTF("C3C3C3");
+				dos.writeBoolean(false);
 				dos.writeDouble(40);
 				dos.writeBoolean(false);
+				dos.writeUTF("src/ImagesAndMore/Julien Marchal - Insight XIV.mp3");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -304,6 +311,8 @@ public class Optionen extends Dialog<ButtonType> {
 			hTf.setText("FFFFFF");
 			bTf.setText("000000");
 			fTf.setText("C3C3C3");
+			MeMode.setSelected(false);
+			mStringTf.setText("src/ImagesAndMore/Julien Marchal - Insight XIV.mp3");
 			this.showAndWait();
 		} 
 //		else if (getColorFromText(hTf) == false) {
@@ -428,8 +437,10 @@ public class Optionen extends Dialog<ButtonType> {
 		hS = dis.readUTF();
 		bS = dis.readUTF();
 		fS = dis.readUTF();
-		sVal = dis.readDouble();
 		tVal = dis.readBoolean();
+		sVal = dis.readDouble();
+		Memode = dis.readBoolean();
+		mStringTf.setText(dis.readUTF());
 		dis.close();
 		hTf.setText(hS);
 		bTf.setText(bS);
@@ -438,5 +449,6 @@ public class Optionen extends Dialog<ButtonType> {
 		getColorFromText(bTf);
 		getColorFromText(fTf);
 		mute.setSelected(tVal);
+		MeMode.setSelected(Memode);
 	}
 }

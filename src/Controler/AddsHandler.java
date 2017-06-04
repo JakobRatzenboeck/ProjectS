@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import Gui.Auswahl;
 import Gui.Game;
+import Music.Player;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -44,6 +45,7 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 						try {
 							game.getTimer().terminate();
 							game.getSt().save();
+							Player.close();
 							Auswahl s = new Auswahl();
 							s.start(new Stage());
 							game.getStage().close();
@@ -53,6 +55,7 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 						}
 					} else if (result.get() == buttonTypeTwo) {
 						game.getTimer().terminate();
+						Player.close();
 						Auswahl s = new Auswahl();
 						s.start(new Stage());
 						game.getStage().close();
@@ -65,6 +68,7 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 					game.getTimer().terminate();
 					Auswahl s = new Auswahl();
 					s.start(new Stage());
+					Player.close();
 					game.getStage().close();
 				}
 			} catch (Exception e) {
@@ -110,6 +114,7 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 						if (file != null) {
 							game.openFile(file);
 						}
+						Player.close();
 						game.getStage().close();
 						
 
@@ -123,6 +128,7 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 					if (file != null) {
 						game.openFile(file);
 					}
+					Player.close();
 					game.getStage().close();
 
 					info.close();
@@ -141,12 +147,12 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 				if (file != null) {
 					game.openFile(file);
 				}
+				Player.close();
 				game.getStage().close();
 			}
 
 			// Hilfe EIN/AUS
 		} else if (source == game.getHilfe()) {
-
 			if (!game.getHilfe().isSelected()) {
 				for (int i = 0; i < 9; ++i) {
 					for (int j = 0; j < 9; ++j) {
@@ -180,7 +186,6 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 						game.getSSpiel(j, i).setText("");
 						game.getSSpiel(j, i).setStyle("-fx-border-color: None");
 						game.getSt().setFertigesfeld(j, i, 0);
-
 					}
 				}
 			}

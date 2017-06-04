@@ -11,6 +11,7 @@ import java.util.Optional;
 import Controler.AddsHandler;
 import Controler.GameNUMHandler;
 import Model.Start;
+import Music.Player;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -54,6 +55,7 @@ public class Game extends Application {
 	private ToggleButton[] butns = new ToggleButton[9];
 	private int now;
 	private Start st;
+	private Player pl;
 
 	final FileChooser fileChooser = new FileChooser();
 	final AddsHandler gbh = new AddsHandler(this);
@@ -64,11 +66,16 @@ public class Game extends Application {
 	private String hS = "";
 	private String bS = "";
 	private String fS = "";
+	private String Mpath;
+	private double lautstaerke;
+	private boolean mMode;
 
 	public Game(int delete) {
 		st = new Start(delete, this);
 		st.getTimer().start();
 		try {
+			loadSettings();
+			pl = new Player(Mpath, this);
 			start(new Stage());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -79,6 +86,8 @@ public class Game extends Application {
 		st = new Start(source, this);
 		st.getTimer().start();
 		try {
+			loadSettings();
+			pl = new Player(Mpath, this);
 			loadpath = source.getPath();
 			start(new Stage());
 		} catch (Exception e) {
@@ -89,7 +98,7 @@ public class Game extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.stage = primaryStage;
-		loadSettings();
+		Player.sound(lautstaerke);
 		FlowPane root = new FlowPane();
 		Scene scene = new Scene(root, 600, 800);
 		primaryStage.setTitle("Sudoku");
@@ -104,20 +113,20 @@ public class Game extends Application {
 			new Optionen(800, 600);
 			try {
 				if (loadpath != null) {
-				st.save(loadpath);
+					st.save(loadpath);
 				} else {
-				DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH.mm");
-				LocalDateTime localDatetime = LocalDateTime.now();
-				st.save();
-				loadpath = "savedGames/" + dtf.format(localDatetime) + "_Sudoku.dat";
+					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH.mm");
+					LocalDateTime localDatetime = LocalDateTime.now();
+					st.save();
+					loadpath = "savedGames/" + dtf.format(localDatetime) + "_Sudoku.dat";
 				}
 			} catch (IOException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			st.getTimer().terminate();
 			new Game(new File(loadpath));
 			primaryStage.close();
+			Player.close();
 		});
 
 		file.getItems().addAll(neu, save, load, opt);
@@ -138,7 +147,11 @@ public class Game extends Application {
 		reset = new Button();
 		reset.setStyle("-fx-background-image: url('reset_50.png')");
 
-		hilfe.setOnAction(new AddsHandler(this));
+		if (mMode) {
+			hilfe.setOnAction(new AddsHandler(this));
+		} else {
+			hilfe.disarm();
+		}
 
 		reset.setOnAction(new AddsHandler(this));
 
@@ -218,7 +231,9 @@ public class Game extends Application {
 									st.fertig();
 									Main m = new Main(400, 400);
 									m.start(new Stage());
+									Player.close();
 									primaryStage.close();
+									st.fertig();
 								}
 							}
 						}
@@ -246,17 +261,11 @@ public class Game extends Application {
 		HBox num = new HBox();
 		ToggleGroup oneToNine = new ToggleGroup();
 		for (int i = 0; i < 9; ++i) {
-			for (int u = 0; u < 9; ++u) {
-				for (int j = 0; j < 9; ++j) {
-					for (int h = 0; h < 9; ++h) {
-						if (st.getFertigesfeld(j, u) == h) {
-
-						}
-					}
-
-				}
+			if (mMode != true) {
+				butns[i] = new ToggleButton("" + (i + 1));
+			} else {
+				butns[i].setStyle("-fx-background-image: url('Meme" + i + ".png')");
 			}
-			butns[i] = new ToggleButton("" + (i + 1));
 			butns[i].setToggleGroup(oneToNine);
 			butns[i].setPrefSize(25, 25);
 			butns[i].setOnAction(new EventHandler<ActionEvent>() {
@@ -303,6 +312,7 @@ public class Game extends Application {
 					@Override
 					public void run() {
 						st.getTimer().terminate();
+						Player.close();
 						primaryStage.close();
 					}
 				});
@@ -315,7 +325,14 @@ public class Game extends Application {
 		hS = dis.readUTF();
 		bS = dis.readUTF();
 		fS = dis.readUTF();
-		dis.readDouble();
+		if (dis.readBoolean()) {
+			lautstaerke = 0;
+			dis.readDouble();
+		} else {
+			lautstaerke = dis.readDouble();
+		}
+		mMode = dis.readBoolean();
+		Mpath = dis.readUTF();
 		dis.close();
 	}
 
@@ -556,6 +573,21 @@ public class Game extends Application {
 	 */
 	public String getfS() {
 		return fS;
+	}
+
+	/**
+	 * @return the pl
+	 */
+	public Player getPl() {
+		return pl;
+	}
+
+	/**
+	 * @param pl
+	 *            the pl to set
+	 */
+	private void setPl(Player pl) {
+		this.pl = pl;
 	}
 
 }
