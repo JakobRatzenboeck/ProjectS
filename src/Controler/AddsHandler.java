@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import Gui.Auswahl;
 import Gui.Game;
+import Gui.Timer;
 import Music.Player;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -85,9 +86,9 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 				} else {
 					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy.MM.dd HH.mm");
 					LocalDateTime localDatetime = LocalDateTime.now();
-					game.getTimer().terminate();
 					game.getSt().save();
 					game.setLoadpath("savedGames/" + dtf.format(localDatetime) + "_Sudoku.dat");
+					game.getSt().getTimer().start();
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

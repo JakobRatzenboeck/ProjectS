@@ -17,6 +17,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -96,10 +98,6 @@ public class Optionen extends Dialog<ButtonType> {
 			e1.printStackTrace();
 		}
 
-		//
-		System.out.println(tVal);
-		System.out.println(Memode);
-
 		if (tVal) {
 			slider.setValue(0);
 			mute.setStyle("-fx-background-image: url('muted.png')");
@@ -122,7 +120,7 @@ public class Optionen extends Dialog<ButtonType> {
 		allgemeinP.setAlignment(Pos.CENTER);
 		fortgP.setAlignment(Pos.CENTER);
 		meP.setAlignment(Pos.CENTER);
-		
+
 		meP.add(MeMode, 1, 1);
 
 		h.setPrefHeight(20);
@@ -130,7 +128,7 @@ public class Optionen extends Dialog<ButtonType> {
 		f.setPrefHeight(20);
 		m.setPrefHeight(20);
 
-//		hCb.getSelectionModel().select(3);
+		// hCb.getSelectionModel().select(3);
 		hCb.valueProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -138,7 +136,7 @@ public class Optionen extends Dialog<ButtonType> {
 				selectTf(hTf, newValue);
 			}
 		});
-//		bCb.getSelectionModel().select(1);
+		// bCb.getSelectionModel().select(1);
 		bCb.valueProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -146,7 +144,7 @@ public class Optionen extends Dialog<ButtonType> {
 				selectTf(bTf, newValue);
 			}
 		});
-//		fCb.getSelectionModel().select(2);
+		// fCb.getSelectionModel().select(2);
 		fCb.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue observable, String oldValue, String newValue) {
@@ -257,12 +255,12 @@ public class Optionen extends Dialog<ButtonType> {
 		mStringTf.tooltipProperty().set(new Tooltip("MP3 datei ist nötig! (C:/User/music/Muster.mp3)"));
 		fortgP.add(mStringTf, 2, 4);
 		mBut.setOnAction(new EventHandler<ActionEvent>() {
-			
+
 			@Override
 			public void handle(ActionEvent event) {
 				configureFileChooser(fileChooser);
 				File file = fileChooser.showOpenDialog(new Stage());
-				if(file != null) {
+				if (file != null) {
 					mStringTf.setText(file.getPath());
 				}
 			}
@@ -279,8 +277,12 @@ public class Optionen extends Dialog<ButtonType> {
 		this.getDialogPane().setContent(tPane);
 		this.onCloseRequestProperty();
 		this.getDialogPane().getButtonTypes().setAll(buttonTypeOk, buttonTypeReset, buttonTypeBack);
+		handleButtonTypes();
+	}
+	
+	public void handleButtonTypes() {
 		Optional<ButtonType> result = this.showAndWait();
-		if (result.get() == buttonTypeOk/* && getColorFromText(hTf) && getColorFromText(bTf) && getColorFromText(fTf)*/) {
+		if (result.get() == buttonTypeOk & validHexacode(hS) & validHexacode(bS) & validHexacode(fS)) {
 			DataOutputStream dos;
 			getColorFromText(hTf);
 			getColorFromText(bTf);
@@ -292,9 +294,9 @@ public class Optionen extends Dialog<ButtonType> {
 			try {
 				f.createNewFile();
 				dos = new DataOutputStream(new FileOutputStream(f));
-				dos.writeUTF(hTf.getText().toUpperCase());
-				dos.writeUTF(bTf.getText().toUpperCase());
-				dos.writeUTF(fTf.getText().toUpperCase());
+				dos.writeUTF(hS.toUpperCase());
+				dos.writeUTF(bS.toUpperCase());
+				dos.writeUTF(fS.toUpperCase());
 				dos.writeBoolean(tVal);
 				dos.writeDouble(sVal);
 				dos.writeBoolean(MeMode.isSelected());
@@ -303,6 +305,28 @@ public class Optionen extends Dialog<ButtonType> {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		} else if (result.get() == buttonTypeOk && (validHexacode(hS) == false | validHexacode(bS) == false
+				| validHexacode(fS) == false)) {
+			if (validHexacode(hS) == false ) {
+				Alert a = new Alert(AlertType.INFORMATION);
+				a.setTitle("Geht nicht");
+				a.setHeaderText(hTf.getText() + " darf nur A,B,C,D,E,F beinhalten");
+				a.setContentText(h.getText());
+				a.showAndWait();
+			} else if (validHexacode(bS) == false ) {
+				Alert a = new Alert(AlertType.INFORMATION);
+				a.setTitle("Geht nicht");
+				a.setHeaderText(bTf.getText() + " darf nur A,B,C,D,E,F beinhalten!");
+				a.setContentText(b.getText());
+				a.showAndWait();
+			} else if (validHexacode(fS) == false ) {
+				Alert a = new Alert(AlertType.INFORMATION);
+				a.setTitle("Geht nicht");
+				a.setHeaderText(fTf.getText() + " darf nur A,B,C,D,E,F beinhalten!");
+				a.setContentText(f.getText());
+				a.showAndWait();
+			}
+			this.showAndWait();
 		} else if (result.get() == buttonTypeReset) {
 			DataOutputStream dos;
 			String path = "Settings/settings.dat";
@@ -332,29 +356,7 @@ public class Optionen extends Dialog<ButtonType> {
 			MeMode.setSelected(false);
 			mStringTf.setText("src/ImagesAndMore/Julien Marchal - Insight XIV.mp3");
 			this.showAndWait();
-		} 
-//		else if (getColorFromText(hTf) == false) {
-//			Alert a = new Alert(AlertType.INFORMATION);
-//			a.setTitle("Geht nicht");
-//			a.setHeaderText(hTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
-//			a.setContentText("");
-//			hTf.requestFocus();
-//			a.show();
-//		} else if (getColorFromText(bTf) == false) {
-//			Alert a = new Alert(AlertType.INFORMATION);
-//			a.setTitle("Geht nicht");
-//			a.setHeaderText(bTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
-//			a.setContentText("");
-//			bTf.requestFocus();
-//			a.show();
-//		} else if (getColorFromText(fTf) == false) {
-//			Alert a = new Alert(AlertType.INFORMATION);
-//			a.setTitle("Geht nicht");
-//			a.setHeaderText(fTf.getText() + " dürfen nur A,B,C,D,E,F beinhalten!");
-//			a.setContentText("");
-//			fTf.requestFocus();
-//			a.show();
-//		}
+		}
 	}
 
 	public static void configureFileChooser(final FileChooser fileChooser) {
@@ -367,12 +369,13 @@ public class Optionen extends Dialog<ButtonType> {
 
 	}
 
-	public boolean getColorFromText(TextField feld) {
+	public void getColorFromText(TextField feld) {
 		String hexa = "";
 		int aIndex = 0;
 		if (feld.getText().length() < 6) {
 			for (int i = feld.getText().length(); i < 6; ++i) {
 				String hex = feld.getText();
+				System.out.println(feld.getText());
 				hex = hex + "0";
 				feld.setText(hex);
 			}
@@ -416,10 +419,6 @@ public class Optionen extends Dialog<ButtonType> {
 				fCb.getSelectionModel().select(aIndex);
 			}
 		}
-		if (validHexacode(feld.getText()) == false) {
-			return false;
-		}
-		return true;
 	}
 
 	public void selectTf(TextField tf, String newValue) {
@@ -452,7 +451,6 @@ public class Optionen extends Dialog<ButtonType> {
 		for (int e = 0; e < code.length(); ++e) {
 			for (int i = 0; i < notAllowed.length(); ++i) {
 				if (notAllowed.substring(i, i + 1).equalsIgnoreCase(code.substring(e, e + 1))) {
-					System.out.println(code);
 					return false;
 				}
 			}
@@ -462,9 +460,9 @@ public class Optionen extends Dialog<ButtonType> {
 
 	public void load() throws IOException {
 		DataInputStream dis = new DataInputStream(new FileInputStream(new File("Settings/settings.dat")));
-		hS = dis.readUTF();
-		bS = dis.readUTF();
-		fS = dis.readUTF();
+		hS = dis.readUTF().toUpperCase();
+		bS = dis.readUTF().toUpperCase();
+		fS = dis.readUTF().toUpperCase();
 		tVal = dis.readBoolean();
 		sVal = dis.readDouble();
 		Memode = dis.readBoolean();
@@ -473,6 +471,7 @@ public class Optionen extends Dialog<ButtonType> {
 		hTf.setText(hS);
 		bTf.setText(bS);
 		fTf.setText(fS);
+		System.out.println(hS + ", " + bS + ", " + fS);
 		getColorFromText(hTf);
 		getColorFromText(bTf);
 		getColorFromText(fTf);
