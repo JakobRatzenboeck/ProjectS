@@ -67,6 +67,7 @@ public class Game extends Application {
 	private String bS = "";
 	private String fS = "";
 	private String Mpath;
+	private boolean mute;
 	private double lautstaerke;
 	private boolean mMode;
 
@@ -98,7 +99,7 @@ public class Game extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.stage = primaryStage;
-		Player.sound(lautstaerke);
+		Player.sound(lautstaerke/100);
 		FlowPane root = new FlowPane();
 		Scene scene = new Scene(root, 600, 800);
 		primaryStage.setTitle("Sudoku");
@@ -112,6 +113,7 @@ public class Game extends Application {
 		opt.setOnAction(ActionEvent -> {
 			new Optionen(800, 600);
 			try {
+				Player.close();
 				if (loadpath != null) {
 					st.save(loadpath);
 				} else {
@@ -264,7 +266,7 @@ public class Game extends Application {
 			if (mMode != true) {
 				butns[i] = new ToggleButton("" + (i + 1));
 			} else {
-				butns[i].setStyle("-fx-background-image: url('Meme" + i + ".png')");
+				butns[i].setStyle("-fx-background-image: url('src/Meme" + i + ".png')");
 			}
 			butns[i].setToggleGroup(oneToNine);
 			butns[i].setPrefSize(25, 25);
@@ -325,7 +327,8 @@ public class Game extends Application {
 		hS = dis.readUTF();
 		bS = dis.readUTF();
 		fS = dis.readUTF();
-		if (dis.readBoolean()) {
+		mute = dis.readBoolean();
+		if (mute) {
 			lautstaerke = 0;
 			dis.readDouble();
 		} else {
@@ -363,6 +366,8 @@ public class Game extends Application {
 		fileChooser.setTitle("View Sudokus");
 		fileChooser.setInitialDirectory(
 				new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "savedGames"));
+		fileChooser.getExtensionFilters().addAll(
+			       new FileChooser.ExtensionFilter("Datei", "*.dat"));
 	}
 
 	public void openFile(File file) {

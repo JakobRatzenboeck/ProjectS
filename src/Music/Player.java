@@ -43,7 +43,7 @@ public class Player {
 	}
 
 	public static void changeVolume(double volume) {
-		if (volume > 0) {
+		if (volume >= 0 && volume <= 1) {
 			mediaPlayer.setVolume(volume);
 		}
 	}

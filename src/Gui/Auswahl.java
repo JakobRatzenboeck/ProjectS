@@ -126,6 +126,8 @@ public class Auswahl extends Application {
 		fileChooser.setTitle("View Sudoku");
 		fileChooser.setInitialDirectory(
 				new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "savedGames"));
+		fileChooser.getExtensionFilters().addAll(
+			       new FileChooser.ExtensionFilter("Datei", "*.dat"));
 	}
 
 	private void openFile(File file) {

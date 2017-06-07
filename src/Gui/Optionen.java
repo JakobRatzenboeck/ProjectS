@@ -15,7 +15,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
@@ -28,9 +30,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class Optionen extends Dialog<ButtonType> {
 
+	private FileChooser fileChooser = new FileChooser();
 	String notAllowed = "HIJKLMNOPQRSTUVWXYZÜÖÄ!\"§$%&/()=?`²³{[]}\\´^°<>|,.-;:_#+*'~@€";
 	// Farbe in hexadezimal
 	String hS = "FFFFFF";
@@ -68,10 +73,11 @@ public class Optionen extends Dialog<ButtonType> {
 	ComboBox<String> fCb = new ComboBox<String>(options);
 
 	ToggleButton MeMode = new ToggleButton("M");
-	
-	Label mString = new Label("Music-File: ");
+
+	Label mString = new Label("MP3-Datei: ");
 	TextField mStringTf = new TextField();
-	
+	Button mBut = new Button();
+
 	Label m = new Label("Musiklautstärke:");
 	Slider slider = new Slider();
 
@@ -163,8 +169,8 @@ public class Optionen extends Dialog<ButtonType> {
 		slider.setShowTickLabels(false);
 		slider.setShowTickMarks(false);
 		slider.setMajorTickUnit(50);
-		slider.setMinorTickCount(5);
-		slider.setBlockIncrement(10);
+		slider.setMinorTickCount(1);
+		slider.setBlockIncrement(1);
 		slider.setPrefHeight(20);
 		// Change Voloume
 		slider.valueProperty().addListener(new ChangeListener<Number>() {
@@ -248,8 +254,20 @@ public class Optionen extends Dialog<ButtonType> {
 		fortgP.add(new Label("Felder:		# "), 1, 3);
 		fortgP.add(fTf, 2, 3);
 		fortgP.add(mString, 1, 4);
-		mStringTf.tooltipProperty().set(new Tooltip("Abloluter pfad ist nötig (C:/User/music/Muster.mp3)"));
+		mStringTf.tooltipProperty().set(new Tooltip("MP3 datei ist nötig! (C:/User/music/Muster.mp3)"));
 		fortgP.add(mStringTf, 2, 4);
+		mBut.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				configureFileChooser(fileChooser);
+				File file = fileChooser.showOpenDialog(new Stage());
+				if(file != null) {
+					mStringTf.setText(file.getPath());
+				}
+			}
+		});
+		fortgP.add(mBut, 3, 4);
 		fortgP.add(m, 1, 5);
 		fortgP.add(slider, 2, 5);
 		fortgP.add(mute, 3, 5);
@@ -337,6 +355,16 @@ public class Optionen extends Dialog<ButtonType> {
 //			fTf.requestFocus();
 //			a.show();
 //		}
+	}
+
+	public static void configureFileChooser(final FileChooser fileChooser) {
+		fileChooser.setTitle("View Sudokus");
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3", "*.mp3"));
+	}
+
+	public void readPath(File file) {
+
 	}
 
 	public boolean getColorFromText(TextField feld) {
