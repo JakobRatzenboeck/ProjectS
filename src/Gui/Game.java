@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import com.sun.prism.paint.Color;
+
 import Controler.AddsHandler;
 import Controler.GameNUMHandler;
 import Model.Start;
@@ -99,11 +101,10 @@ public class Game extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.stage = primaryStage;
-		Player.sound(lautstaerke/100);
+		Player.sound(lautstaerke / 100);
 		FlowPane root = new FlowPane();
 		Scene scene = new Scene(root, 600, 800);
 		primaryStage.setTitle("Sudoku");
-
 		neu.setOnAction(new AddsHandler(this));
 
 		save.setOnAction(new AddsHandler(this));
@@ -141,9 +142,9 @@ public class Game extends Application {
 
 		// Zusatz
 		HBox adds = new HBox();
-		adds.setMinSize(500, 50);
-		adds.setPrefSize(600, 50);
-		adds.setMaxSize(1000, 50);
+		adds.setMinSize(92, 50);
+		adds.setPrefSize(452, 50);
+		adds.setMaxSize(677, 50);
 
 		hilfe = new ToggleButton();
 		reset = new Button();
@@ -159,7 +160,7 @@ public class Game extends Application {
 
 		timerH.setMinSize(12, 50);
 		timerM.setMinSize(12, 50);
-		timerS.setMinSize(102, 50);
+		timerS.setMinSize(12, 50);
 		hilfe.setMinSize(50, 50);
 		reset.setMinSize(49, 50);
 
@@ -168,6 +169,9 @@ public class Game extends Application {
 		d.setMinSize(2, 50);
 		d2.setMinSize(2, 50);
 
+		HBox.setMargin(timerS, new Insets(0, 90, 0, 0));
+		HBox.setMargin(timerH, new Insets(0, 0, 0, 209));
+		adds.setStyle("-fx-background-color: #FFFFFF");
 		adds.getChildren().add(timerH);
 		adds.getChildren().add(d);
 		adds.getChildren().add(timerM);
@@ -224,9 +228,13 @@ public class Game extends Application {
 								Alert meldung = new Alert(AlertType.INFORMATION);
 								meldung.setTitle("Eilmeldung");
 								meldung.setHeaderText("Sie haben gewonnen");
-								meldung.setContentText(
-										"Gebrauchte Zeit || Stunde : Minute : Sekunde || " + timerH.getText() + ":"
-												+ timerM.getText() + ":" + (Integer.parseInt(timerS.getText()) + 1));
+								if (timerS.getText().substring(0, 1).equals("0")) {
+									meldung.setContentText("Gebrauchte Zeit:  " + timerH.getText() + ":"
+											+ timerM.getText() + ":0" + (Integer.parseInt(timerS.getText()) + 1));
+								} else {
+									meldung.setContentText("Gebrauchte Zeit: " + timerH.getText() + ":"
+											+ timerM.getText() + ":" + (Integer.parseInt(timerS.getText()) + 1));
+								}
 								meldung.getDialogPane().getButtonTypes().setAll(buttonTypeOk);
 								Optional<ButtonType> result = meldung.showAndWait();
 								if (result.get() == buttonTypeOk) {
@@ -291,8 +299,8 @@ public class Game extends Application {
 				int i = 0; i < 9; ++i) {
 			HBox.setMargin(butns[i], new Insets(50, 12, 0, 12));
 		}
-		FlowPane.setMargin(adds, new Insets(2.5, 0, 2.5, 275));
-		FlowPane.setMargin(sFeld, new Insets(5, 66, 30, 66));
+		FlowPane.setMargin(adds, new Insets(5, 0, 2, 66));
+		FlowPane.setMargin(sFeld, new Insets(3, 66, 10, 66));
 		FlowPane.setMargin(num, new Insets(0, 75, 0, 75));
 
 		root.setStyle("-fx-background-color: #" + hS + "");
@@ -300,7 +308,9 @@ public class Game extends Application {
 
 		primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, new GameNUMHandler(this));
 		primaryStage.setMinWidth(600);
-		primaryStage.setMinHeight(800);
+		primaryStage.setMaxWidth(600);
+		primaryStage.setMinHeight(700);
+		primaryStage.setHeight(800);
 		primaryStage.centerOnScreen();
 		primaryStage.getIcons().add(new Image("JJGames.png"));
 		primaryStage.setScene(scene);
@@ -347,13 +357,15 @@ public class Game extends Application {
 			for (int i = 0; i < 9; ++i) {
 				for (int j = 0; j < 9; ++j) {
 					if (st.getFertigesfeld(j, i) != 0) {
-						if (st.getFertigesfeld(j, i) == now) {
-							sSpiel[j][i].setStyle("-fx-color: #00A9D3");
-						} else {
-							if (st.getAnfang(j, i)) {
-								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+						if (mMode == false) {
+							if (st.getFertigesfeld(j, i) == now) {
+								sSpiel[j][i].setStyle("-fx-color: #00A9D3");
 							} else {
-								sSpiel[j][i].setStyle("-fx-border-color: None");
+								if (st.getAnfang(j, i)) {
+									sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+								} else {
+									sSpiel[j][i].setStyle("-fx-border-color: None");
+								}
 							}
 						}
 					}
@@ -366,8 +378,7 @@ public class Game extends Application {
 		fileChooser.setTitle("View Sudokus");
 		fileChooser.setInitialDirectory(
 				new File(System.getProperty("user.dir") + System.getProperty("file.separator") + "savedGames"));
-		fileChooser.getExtensionFilters().addAll(
-			       new FileChooser.ExtensionFilter("Datei", "*.dat"));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Datei", "*.dat"));
 	}
 
 	public void openFile(File file) {

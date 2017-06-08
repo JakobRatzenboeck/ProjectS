@@ -100,11 +100,11 @@ public class Optionen extends Dialog<ButtonType> {
 
 		if (tVal) {
 			slider.setValue(0);
-			mute.setStyle("-fx-background-image: url('muted.png')");
+			mute.setStyle("-fx-background-image: url('ImagesAndMore/muted.png')");
 		} else {
 			slider.setValue(sVal);
 		}
-		mute.setStyle("-fx-background-image: url('muted.png')");
+		mute.setStyle("-fx-background-image: url('ImagesAndMore/muted.png')");
 
 		this.setTitle("Optionen");
 		this.setHeight(800);
@@ -176,23 +176,23 @@ public class Optionen extends Dialog<ButtonType> {
 				if (slider.getValue() >= 75) {
 					mute.setSelected(false);
 					tVal = false;
-					mute.setStyle("-fx-background-image: url('unmuted.png')");
+					mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted.png')");
 				} else if (slider.getValue() >= 50) {
 					mute.setSelected(false);
 					tVal = false;
-					mute.setStyle("-fx-background-image: url('unmuted2.png')");
+					mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted2.png')");
 				} else if (slider.getValue() >= 25) {
 					mute.setSelected(false);
 					tVal = false;
-					mute.setStyle("-fx-background-image: url('unmuted1.png')");
+					mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted1.png')");
 				} else if (slider.getValue() == 0) {
 					mute.setSelected(false);
 					tVal = false;
-					mute.setStyle("-fx-background-image: url('muted.png')");
+					mute.setStyle("-fx-background-image: url('ImagesAndMore/muted.png')");
 				} else {
 					mute.setSelected(false);
 					tVal = false;
-					mute.setStyle("-fx-background-image: url('unmuted0.png')");
+					mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted0.png')");
 				}
 			}
 		});
@@ -201,45 +201,45 @@ public class Optionen extends Dialog<ButtonType> {
 		mute.setMinSize(25, 25);
 		if (slider.getValue() >= 75) {
 			mute.setSelected(false);
-			mute.setStyle("-fx-background-image: url('unmuted.png')");
+			mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted.png')");
 		} else if (slider.getValue() >= 50) {
 			mute.setSelected(false);
-			mute.setStyle("-fx-background-image: url('unmuted2.png')");
+			mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted2.png')");
 		} else if (slider.getValue() >= 25) {
 			mute.setSelected(false);
-			mute.setStyle("-fx-background-image: url('unmuted1.png')");
+			mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted1.png')");
 		} else if (slider.getValue() == 0) {
 			mute.setSelected(false);
-			mute.setStyle("-fx-background-image: url('muted.png')");
+			mute.setStyle("-fx-background-image: url('ImagesAndMore/muted.png')");
 		} else {
 			mute.setSelected(false);
-			mute.setStyle("-fx-background-image: url('unmuted0.png')");
+			mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted0.png')");
 		}
 		mute.setOnAction(new EventHandler<javafx.event.ActionEvent>() {
 
 			@Override
 			public void handle(ActionEvent event) {
 				if (mute.isSelected() && slider.getValue() != 0) {
-					mute.setStyle("-fx-background-image: url('muted.png')");
+					mute.setStyle("-fx-background-image: url('ImagesAndMore/muted.png')");
 					sVal = slider.getValue();
 					slider.setValue(0);
 					tVal = true;
 				} else {
 					slider.setValue(sVal);
 					if (slider.getValue() >= 75) {
-						mute.setStyle("-fx-background-image: url('unmuted.png')");
+						mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted.png')");
 						tVal = false;
 					} else if (slider.getValue() >= 50) {
-						mute.setStyle("-fx-background-image: url('unmuted2.png')");
+						mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted2.png')");
 						tVal = false;
 					} else if (slider.getValue() >= 25) {
-						mute.setStyle("-fx-background-image: url('unmuted1.png')");
+						mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted1.png')");
 						tVal = false;
 					} else if (slider.getValue() == 0) {
-						mute.setStyle("-fx-background-image: url('muted.png')");
+						mute.setStyle("-fx-background-image: url('ImagesAndMore/muted.png')");
 						tVal = false;
 					} else {
-						mute.setStyle("-fx-background-image: url('unmuted0.png')");
+						mute.setStyle("-fx-background-image: url('ImagesAndMore/unmuted0.png')");
 						tVal = false;
 					}
 				}
@@ -254,6 +254,8 @@ public class Optionen extends Dialog<ButtonType> {
 		fortgP.add(mString, 1, 4);
 		mStringTf.tooltipProperty().set(new Tooltip("MP3 datei ist nötig! (C:/User/music/Muster.mp3)"));
 		fortgP.add(mStringTf, 2, 4);
+		mBut.setMinSize(35, 35);
+		mBut.setStyle("-fx-background-image: url('ImagesAndMore/ordner.jpg')");
 		mBut.setOnAction(new EventHandler<ActionEvent>() {
 
 			@Override
@@ -264,6 +266,7 @@ public class Optionen extends Dialog<ButtonType> {
 					mStringTf.setText(file.getPath());
 				}
 			}
+		
 		});
 		fortgP.add(mBut, 3, 4);
 		fortgP.add(m, 1, 5);
@@ -342,7 +345,7 @@ public class Optionen extends Dialog<ButtonType> {
 				dos.writeBoolean(false);
 				dos.writeDouble(40);
 				dos.writeBoolean(false);
-				dos.writeUTF("src/ImagesAndMore/Julien Marchal - Insight XIV.mp3");
+				dos.writeUTF("Settings/Julien Marchal - Insight XIV.mp3");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -354,7 +357,7 @@ public class Optionen extends Dialog<ButtonType> {
 			bTf.setText("000000");
 			fTf.setText("C3C3C3");
 			MeMode.setSelected(false);
-			mStringTf.setText("src/ImagesAndMore/Julien Marchal - Insight XIV.mp3");
+			mStringTf.setText("Settings/Julien Marchal - Insight XIV.mp3");
 			this.showAndWait();
 		}
 	}
@@ -375,7 +378,6 @@ public class Optionen extends Dialog<ButtonType> {
 		if (feld.getText().length() < 6) {
 			for (int i = feld.getText().length(); i < 6; ++i) {
 				String hex = feld.getText();
-				System.out.println(feld.getText());
 				hex = hex + "0";
 				feld.setText(hex);
 			}
@@ -471,7 +473,6 @@ public class Optionen extends Dialog<ButtonType> {
 		hTf.setText(hS);
 		bTf.setText(bS);
 		fTf.setText(fS);
-		System.out.println(hS + ", " + bS + ", " + fS);
 		getColorFromText(hTf);
 		getColorFromText(bTf);
 		getColorFromText(fTf);
