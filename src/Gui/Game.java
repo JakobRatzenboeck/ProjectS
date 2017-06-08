@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-import com.sun.prism.paint.Color;
-
 import Controler.AddsHandler;
 import Controler.GameNUMHandler;
 import Model.Start;
@@ -73,6 +71,11 @@ public class Game extends Application {
 	private double lautstaerke;
 	private boolean mMode;
 
+	/**
+	 * Erstellt ein G.U.I. mit neuen Sudoku
+	 * 
+	 * @param delete
+	 */
 	public Game(int delete) {
 		st = new Start(delete, this);
 		st.getTimer().start();
@@ -85,6 +88,11 @@ public class Game extends Application {
 		}
 	}
 
+	/**
+	 * Erstellt ein G.U.I. mit gespeicherten Sudoku
+	 * 
+	 * @param source
+	 */
 	public Game(File source) {
 		st = new Start(source, this);
 		st.getTimer().start();
@@ -98,6 +106,9 @@ public class Game extends Application {
 		}
 	}
 
+	/**
+	 * Erbaut die G.U.I.
+	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.stage = primaryStage;
@@ -148,7 +159,7 @@ public class Game extends Application {
 
 		hilfe = new ToggleButton();
 		reset = new Button();
-		reset.setStyle("-fx-background-image: url('reset_50.png')");
+		reset.setStyle("-fx-background-image: url('ImagesAndMore/reset_50.png')");
 
 		if (mMode) {
 			hilfe.setOnAction(new AddsHandler(this));
@@ -189,11 +200,16 @@ public class Game extends Application {
 		for (int i = 0; i < 9; ++i) {
 			for (int j = 0; j < 9; ++j) {
 				sSpiel[j][i] = new Button();
-				if (st.getFertigesfeld(j, i) != 0) {
+				if (st.getFertigesfeld(j, i) != 0 && mMode == false) {
 					sSpiel[j][i].setText("" + st.getFertigesfeld(j, i));
+				} else if (mMode == true) {
+					sSpiel[j][i].setStyle(
+							"-fx-background-color: url('src/ImagesAndMore/Meme" + st.getFertigesfeld(j, i) + ".png')");
 				}
 				if (st.getAnfang(j, i) == true) {
-					sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+					if (mMode == false) {
+						sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+					}
 				} else {
 					sSpiel[j][i].setOnAction(new EventHandler<ActionEvent>() {
 
@@ -202,22 +218,38 @@ public class Game extends Application {
 							for (int i = 0; i < 9; ++i) {
 								for (int j = 0; j < 9; ++j) {
 									if (sSpiel[j][i].isFocused()) {
-										if (sSpiel[j][i].getText().equals("" + now)) {
-											sSpiel[j][i].setText("");
-											if (st.getAnfang(j, i)) {
-												sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-											} else {
-												sSpiel[j][i].setStyle("-fx-border-color: None");
-											}
-											st.setFertigesfeld(j, i, 0);
-										} else {
-											if (now != 0) {
-												if (hilfe.isSelected()) {
-													sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+										if (mMode == false) {
+											if (sSpiel[j][i].getText().equals("" + now)) {
+												sSpiel[j][i].setText("");
+												if (st.getAnfang(j, i)) {
+													sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+												} else {
+													sSpiel[j][i].setStyle("-fx-border-color: None");
 												}
-												sSpiel[j][i].setText("" + now);
+												st.setFertigesfeld(j, i, 0);
+											} else {
+												if (now != 0) {
+													if (hilfe.isSelected()) {
+														sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+													}
+													sSpiel[j][i].setText("" + now);
+												}
+												st.setFertigesfeld(j, i, now);
 											}
-											st.setFertigesfeld(j, i, now);
+										} else {
+											for (int e = 1; e <= 9; ++e) {
+												if (sSpiel[j][i].getStyle().contains("" + e)) {
+													sSpiel[j][i].setStyle("-fx-background-image: None");
+												} else {
+													if (now != 0) {
+														sSpiel[j][i].setStyle(
+																"-fx-background-image: url('src/ImagesAndMore/Meme"
+																		+ now + ".png')");
+													}
+													st.setFertigesfeld(j, i, now);
+
+												}
+											}
 										}
 									}
 								}
@@ -274,7 +306,8 @@ public class Game extends Application {
 			if (mMode != true) {
 				butns[i] = new ToggleButton("" + (i + 1));
 			} else {
-				butns[i].setStyle("-fx-background-image: url('src/Meme" + i + ".png')");
+				butns[i] = new ToggleButton();
+				butns[i].setStyle("-fx-background-image: url('ImagesAndMore/Meme" + (i + 1) + "toggle.png')");
 			}
 			butns[i].setToggleGroup(oneToNine);
 			butns[i].setPrefSize(25, 25);
@@ -283,10 +316,15 @@ public class Game extends Application {
 				@Override
 				public void handle(ActionEvent event) {
 					now = 0;
-					for (int i = 0; i < 9; ++i) {
+					int i = 0;
+					for (i = 0; i < 9; ++i) {
 						if (butns[i].isSelected()) {
-							now = Integer.parseInt(butns[i].getText());
+							now = i + 1;
 							selectButns(i);
+							if (mMode == true) {
+								
+								hilfe.setStyle("-fx-background-image: url('src/ImagesAndMore/Meme" + now + ".png')");
+							}
 						}
 					}
 
@@ -312,7 +350,7 @@ public class Game extends Application {
 		primaryStage.setMinHeight(700);
 		primaryStage.setHeight(800);
 		primaryStage.centerOnScreen();
-		primaryStage.getIcons().add(new Image("JJGames.png"));
+		primaryStage.getIcons().add(new Image("ImagesAndMore/JJGames.png"));
 		primaryStage.setScene(scene);
 		primaryStage.show();
 		primaryStage.setOnHiding(new EventHandler<WindowEvent>() {
@@ -357,15 +395,13 @@ public class Game extends Application {
 			for (int i = 0; i < 9; ++i) {
 				for (int j = 0; j < 9; ++j) {
 					if (st.getFertigesfeld(j, i) != 0) {
-						if (mMode == false) {
-							if (st.getFertigesfeld(j, i) == now) {
-								sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+						if (st.getFertigesfeld(j, i) == now) {
+							sSpiel[j][i].setStyle("-fx-color: #00A9D3");
+						} else {
+							if (st.getAnfang(j, i)) {
+								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
 							} else {
-								if (st.getAnfang(j, i)) {
-									sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-								} else {
-									sSpiel[j][i].setStyle("-fx-border-color: None");
-								}
+								sSpiel[j][i].setStyle("-fx-border-color: None");
 							}
 						}
 					}
@@ -431,14 +467,6 @@ public class Game extends Application {
 	}
 
 	/**
-	 * @param timer
-	 *            the timer to set
-	 */
-	private void setTimer(Timer timer) {
-		this.st.setTimer(timer);
-	}
-
-	/**
 	 * @return the loadpath
 	 */
 	public String getLoadpath() {
@@ -461,26 +489,10 @@ public class Game extends Application {
 	}
 
 	/**
-	 * @param neu
-	 *            the neu to set
-	 */
-	private void setNeu(MenuItem neu) {
-		this.neu = neu;
-	}
-
-	/**
 	 * @return the save
 	 */
 	public MenuItem getSave() {
 		return save;
-	}
-
-	/**
-	 * @param save
-	 *            the save to set
-	 */
-	private void setSave(MenuItem save) {
-		this.save = save;
 	}
 
 	/**
@@ -491,14 +503,6 @@ public class Game extends Application {
 	}
 
 	/**
-	 * @param load
-	 *            the load to set
-	 */
-	private void setLoad(MenuItem load) {
-		this.load = load;
-	}
-
-	/**
 	 * @return the gm
 	 */
 	public Start getSt() {
@@ -506,26 +510,10 @@ public class Game extends Application {
 	}
 
 	/**
-	 * @param gm
-	 *            the gm to set
-	 */
-	private void setSt(Start gm) {
-		this.st = gm;
-	}
-
-	/**
 	 * @return the stage
 	 */
 	public Stage getStage() {
 		return stage;
-	}
-
-	/**
-	 * @param stage
-	 *            the stage to set
-	 */
-	private void setStage(Stage stage) {
-		this.stage = stage;
 	}
 
 	/**
@@ -543,26 +531,10 @@ public class Game extends Application {
 	}
 
 	/**
-	 * @param hilfe
-	 *            the hilfe to set
-	 */
-	private void setHilfe(ToggleButton hilfe) {
-		this.hilfe = hilfe;
-	}
-
-	/**
 	 * @return the now
 	 */
 	public int getNow() {
 		return now;
-	}
-
-	/**
-	 * @param now
-	 *            the now to set
-	 */
-	private void setNow(int now) {
-		this.now = now;
 	}
 
 	public Button getSSpiel(int x, int y) {
@@ -574,14 +546,6 @@ public class Game extends Application {
 	 */
 	public Button getReset() {
 		return reset;
-	}
-
-	/**
-	 * @param reset
-	 *            the reset to set
-	 */
-	private void setReset(Button reset) {
-		this.reset = reset;
 	}
 
 	/**
@@ -599,11 +563,10 @@ public class Game extends Application {
 	}
 
 	/**
-	 * @param pl
-	 *            the pl to set
+	 * @return the mMode
 	 */
-	private void setPl(Player pl) {
-		this.pl = pl;
+	public boolean getMMode() {
+		return mMode;
 	}
 
 }

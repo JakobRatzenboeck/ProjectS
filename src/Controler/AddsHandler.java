@@ -117,7 +117,6 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 						}
 						Player.close();
 						game.getStage().close();
-						
 
 						info.close();
 					} catch (IOException e) {
@@ -153,7 +152,7 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 			}
 
 			// Hilfe EIN/AUS
-		} else if (source == game.getHilfe()) {
+		} else if (source == game.getHilfe() && game.getMMode() == false) {
 			if (!game.getHilfe().isSelected()) {
 				for (int i = 0; i < 9; ++i) {
 					for (int j = 0; j < 9; ++j) {

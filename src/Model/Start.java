@@ -245,33 +245,6 @@ public class Start {
 		timer = new Timer(game, timer.getSec(),timer.getMin(), timer.getHour());
 		dos.close();
 	}
-	
-
-//	public void print() {
-//		System.out.println(" ╔═══╦═══╦═══╦╦═══╦═══╦═══╦╦═══╦═══╦═══╗");
-//		for (int i = 0; i < 9; i++) {
-//			for (int j = 0; j < 9; j++) {
-//				if (j == 3 || j == 6 || j == 9) {
-//					System.out.print(" ║║ ");
-//				} else {
-//					System.out.print(" ║ ");
-//				}
-//				if (fertigesfeld[j][i] == 0) {
-//					System.out.print(" ");
-//				} else {
-//					System.out.print(fertigesfeld[j][i]);
-//				}
-//			}
-//			System.out.println(" ║");
-//			if (i != 8) {
-//				System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
-//				if (i == 2 || i == 5) {
-//					System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
-//				}
-//			}
-//		}
-//		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
-//	}
 
 	
 	/**

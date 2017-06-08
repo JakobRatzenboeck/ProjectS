@@ -68,7 +68,7 @@ public class Optionen extends Dialog<ButtonType> {
 	Label h = new Label("Hintergrund: ");
 	ComboBox<String> hCb = new ComboBox<String>(options);
 
-	Label b = new Label("Border: ");
+	Label b = new Label("3x3-Abgrenzung: ");
 	ComboBox<String> bCb = new ComboBox<String>(options);
 
 	Label f = new Label("Felder: ");
@@ -132,7 +132,7 @@ public class Optionen extends Dialog<ButtonType> {
 		hCb.valueProperty().addListener(new ChangeListener<String>() {
 
 			@Override
-			public void changed(ObservableValue observable, String oldValue, String newValue) {
+			public void changed(@SuppressWarnings("rawtypes") ObservableValue observable, String oldValue, String newValue) {
 				selectTf(hTf, newValue);
 			}
 		});
@@ -140,14 +140,14 @@ public class Optionen extends Dialog<ButtonType> {
 		bCb.valueProperty().addListener(new ChangeListener<String>() {
 
 			@Override
-			public void changed(ObservableValue observable, String oldValue, String newValue) {
+			public void changed(@SuppressWarnings("rawtypes") ObservableValue observable, String oldValue, String newValue) {
 				selectTf(bTf, newValue);
 			}
 		});
 		// fCb.getSelectionModel().select(2);
 		fCb.valueProperty().addListener(new ChangeListener<String>() {
 			@Override
-			public void changed(ObservableValue observable, String oldValue, String newValue) {
+			public void changed(@SuppressWarnings("rawtypes") ObservableValue observable, String oldValue, String newValue) {
 				selectTf(fTf, newValue);
 			}
 		});

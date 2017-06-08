@@ -129,7 +129,7 @@ public class Main extends Application {
 			root.setBottom(boxbottom);
 
 			primaryStage.centerOnScreen();
-			primaryStage.getIcons().add(new Image("JJGames.png"));
+			primaryStage.getIcons().add(new Image("ImagesAndMore/JJGames.png"));
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();

@@ -114,7 +114,7 @@ public class Auswahl extends Application {
 			
 			scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.centerOnScreen();
-			primaryStage.getIcons().add(new Image("JJGames.png"));
+			primaryStage.getIcons().add(new Image("ImagesAndMore/JJGames.png"));
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
