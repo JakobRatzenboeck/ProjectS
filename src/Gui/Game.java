@@ -33,6 +33,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -75,6 +76,7 @@ public class Game extends Application {
 	 * Erstellt ein G.U.I. mit neuen Sudoku
 	 * 
 	 * @param delete
+	 *            how many gap's there going to be
 	 */
 	public Game(int delete) {
 		st = new Start(delete, this);
@@ -92,6 +94,7 @@ public class Game extends Application {
 	 * Erstellt ein G.U.I. mit gespeicherten Sudoku
 	 * 
 	 * @param source
+	 *            is the old Sudoku
 	 */
 	public Game(File source) {
 		st = new Start(source, this);
@@ -106,9 +109,6 @@ public class Game extends Application {
 		}
 	}
 
-	/**
-	 * Erbaut die G.U.I.
-	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		this.stage = primaryStage;
@@ -161,10 +161,8 @@ public class Game extends Application {
 		reset = new Button();
 		reset.setStyle("-fx-background-image: url('ImagesAndMore/reset_50.png')");
 
-		if (mMode) {
+		if (mMode == false) {
 			hilfe.setOnAction(new AddsHandler(this));
-		} else {
-			hilfe.disarm();
 		}
 
 		reset.setOnAction(new AddsHandler(this));
@@ -200,16 +198,17 @@ public class Game extends Application {
 		for (int i = 0; i < 9; ++i) {
 			for (int j = 0; j < 9; ++j) {
 				sSpiel[j][i] = new Button();
-				if (st.getFertigesfeld(j, i) != 0 && mMode == false) {
+				sSpiel[j][i].setFont(new Font("Arial", 18));
+				sSpiel[j][i].setStyle("-fx-font: 18px 'Arial'");
+				if (dedectDarkColor(fS)) {
+					sSpiel[j][i].setStyle("-fx-text-fill: #FFFFFF");
+				}
+
+				if (st.getFertigesfeld(j, i) != 0) {
 					sSpiel[j][i].setText("" + st.getFertigesfeld(j, i));
-				} else if (mMode == true) {
-					sSpiel[j][i].setStyle(
-							"-fx-background-color: url('src/ImagesAndMore/Meme" + st.getFertigesfeld(j, i) + ".png')");
 				}
 				if (st.getAnfang(j, i) == true) {
-					if (mMode == false) {
-						sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-					}
+					sSpiel[j][i].setStyle("-fx-color: #" + fS + "");
 				} else {
 					sSpiel[j][i].setOnAction(new EventHandler<ActionEvent>() {
 
@@ -218,38 +217,22 @@ public class Game extends Application {
 							for (int i = 0; i < 9; ++i) {
 								for (int j = 0; j < 9; ++j) {
 									if (sSpiel[j][i].isFocused()) {
-										if (mMode == false) {
-											if (sSpiel[j][i].getText().equals("" + now)) {
-												sSpiel[j][i].setText("");
-												if (st.getAnfang(j, i)) {
-													sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
-												} else {
-													sSpiel[j][i].setStyle("-fx-border-color: None");
-												}
-												st.setFertigesfeld(j, i, 0);
+										if (sSpiel[j][i].getText().equals("" + now)) {
+											sSpiel[j][i].setText("");
+											if (st.getAnfang(j, i)) {
+												sSpiel[j][i].setStyle("-fx-color: #" + fS + "");
 											} else {
-												if (now != 0) {
-													if (hilfe.isSelected()) {
-														sSpiel[j][i].setStyle("-fx-color: #00A9D3");
-													}
-													sSpiel[j][i].setText("" + now);
-												}
-												st.setFertigesfeld(j, i, now);
+												sSpiel[j][i].setStyle(null);
 											}
+											st.setFertigesfeld(j, i, 0);
 										} else {
-											for (int e = 1; e <= 9; ++e) {
-												if (sSpiel[j][i].getStyle().contains("" + e)) {
-													sSpiel[j][i].setStyle("-fx-background-image: None");
-												} else {
-													if (now != 0) {
-														sSpiel[j][i].setStyle(
-																"-fx-background-image: url('src/ImagesAndMore/Meme"
-																		+ now + ".png')");
-													}
-													st.setFertigesfeld(j, i, now);
-
+											if (now != 0) {
+												if (hilfe.isSelected()) {
+													sSpiel[j][i].setStyle("-fx-background-color: #00A9D3");
 												}
+												sSpiel[j][i].setText("" + now);
 											}
+											st.setFertigesfeld(j, i, now);
 										}
 									}
 								}
@@ -270,12 +253,13 @@ public class Game extends Application {
 								meldung.getDialogPane().getButtonTypes().setAll(buttonTypeOk);
 								Optional<ButtonType> result = meldung.showAndWait();
 								if (result.get() == buttonTypeOk) {
-									st.fertig();
+									if (loadpath != null) {
+										st.fertig(loadpath);
+									}
 									Main m = new Main(400, 400);
 									m.start(new Stage());
 									Player.close();
 									primaryStage.close();
-									st.fertig();
 								}
 							}
 						}
@@ -321,10 +305,6 @@ public class Game extends Application {
 						if (butns[i].isSelected()) {
 							now = i + 1;
 							selectButns(i);
-							if (mMode == true) {
-								
-								hilfe.setStyle("-fx-background-image: url('src/ImagesAndMore/Meme" + now + ".png')");
-							}
 						}
 					}
 
@@ -370,6 +350,12 @@ public class Game extends Application {
 		});
 	}
 
+	/**
+	 * Loads Settings
+	 * 
+	 * @throws IOException
+	 *             if the Settings are Incorect
+	 */
 	public void loadSettings() throws IOException {
 		DataInputStream dis = new DataInputStream(new FileInputStream(new File("Settings/settings.dat")));
 		hS = dis.readUTF();
@@ -387,6 +373,57 @@ public class Game extends Application {
 		dis.close();
 	}
 
+	/**
+	 * Macht den text Weis wenn der Hintergrund dunkel ist
+	 * 
+	 * @param code
+	 *            is a Hexadecimal value
+	 * @return true if it's to dark
+	 */
+	public boolean dedectDarkColor(String code) {
+		String hexa = "0123456789ABCDEF";
+		String red = code.substring(0, 2);
+		String green = code.substring(2, 4);
+		String blue = code.substring(4, 6);
+		int redI = 0;
+		int greenI = 0;
+		int blueI = 0;
+		for (int h = 0; h < 2; ++h) {
+			for (int e = 0; e < hexa.length(); ++e) {
+				if (red.charAt(h) == hexa.charAt(e)) {
+					if (h == 0) {
+						redI += e * 16;
+					} else {
+						redI += e;
+					}
+				}
+				if (green.charAt(h) == hexa.charAt(e)) {
+					if (h == 0) {
+						greenI += e * 16;
+					} else {
+						greenI += e;
+					}
+				}
+				if (blue.charAt(h) == hexa.charAt(e)) {
+					if (h == 0) {
+						blueI += e * 16;
+					} else {
+						blueI += e;
+					}
+				}
+			}
+		}
+		if (redI < 80 || greenI < 80 || blueI < 80) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param bunts
+	 *            what button is selected
+	 */
 	public void selectButns(int bunts) {
 		now = bunts + 1;
 		butns[bunts].setSelected(true);
@@ -399,9 +436,9 @@ public class Game extends Application {
 							sSpiel[j][i].setStyle("-fx-color: #00A9D3");
 						} else {
 							if (st.getAnfang(j, i)) {
-								sSpiel[j][i].setStyle("-fx-background-color: #" + fS + "");
+								sSpiel[j][i].setStyle("-fx-color: #" + fS + "");
 							} else {
-								sSpiel[j][i].setStyle("-fx-border-color: None");
+								sSpiel[j][i].setStyle(null);
 							}
 						}
 					}
@@ -410,6 +447,11 @@ public class Game extends Application {
 		}
 	}
 
+	/**
+	 * 
+	 * @param fileChooser
+	 *            a Window to select a File
+	 */
 	public static void configureFileChooser(final FileChooser fileChooser) {
 		fileChooser.setTitle("View Sudokus");
 		fileChooser.setInitialDirectory(
@@ -417,6 +459,12 @@ public class Game extends Application {
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Datei", "*.dat"));
 	}
 
+	/**
+	 * Opens a new Game
+	 * 
+	 * @param file
+	 *            thats going to be the Game
+	 */
 	public void openFile(File file) {
 		new Game(file);
 	}
@@ -436,24 +484,30 @@ public class Game extends Application {
 	}
 
 	/**
-	 * @param timerH
-	 *            the timerH to set
+	 * the hour to set
+	 * 
+	 * @param h
+	 *            how many hours you start with
 	 */
 	public void setTimerH(String h) {
 		timerH.setText(h);
 	}
 
 	/**
-	 * @param timerM
-	 *            the timerM to set
+	 * the minute to set
+	 * 
+	 * @param m
+	 *            how many minutes you start with
 	 */
 	public void setTimerM(String m) {
 		timerM.setText(m);
 	}
 
 	/**
-	 * @param timerS
-	 *            the timerS to set
+	 * the second to set
+	 * 
+	 * @param s
+	 *            how many seconds you start with
 	 */
 	public void setTimerS(String s) {
 		timerS.setText(s);

@@ -5,19 +5,14 @@ import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.DosFileAttributes;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.UUID;
 
 import Gui.Game;
 import Gui.Timer;
@@ -38,7 +33,6 @@ public class Start {
 		try {
 			load(source, game);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ag = new Autogenerate(fertigesfeld, feld);
@@ -115,9 +109,8 @@ public class Start {
 		return fertig;
 	}
 
-	public void fertig() {
+	public void fertig(String path) {
 		if (finished()) {
-			String path = "savedGames/" + getId() + "_Sudoku.dat";
 			try {
 				Files.delete(Paths.get(path));
 			} catch (NoSuchFileException x) {
@@ -248,15 +241,20 @@ public class Start {
 
 	
 	/**
-	 * @return the fertigesfeld
+	 *  To get a specific int
+	 * @param x cordinate
+	 * @param y cordinate
+	 * @return a value
 	 */
 	public int getFertigesfeld(int x, int y) {
 		return fertigesfeld[x][y];
 	}
 
 	/**
-	 * @param fertigesfeld
-	 *            the fertigesfeld to set
+	 *  set a Number in the int Array
+	 * @param x cordinate
+	 * @param y cordinate
+	 * @param wert is the value that is going to get set
 	 */
 	public void setFertigesfeld(int x, int y, int wert) {
 		fertigesfeld[x][y] = wert;
@@ -271,7 +269,6 @@ public class Start {
 
 	/**
 	 * @param fertigesfeld
-	 *            the fertigesfeld to set
 	 */
 	private void setFertigesfeld(int[][] fertigesfeld) {
 		this.fertigesfeld = fertigesfeld;
@@ -293,7 +290,10 @@ public class Start {
 	}
 
 	/**
-	 * @return the feld
+	 * 
+	 * @param x cordinate
+	 * @param y cordinate
+	 * @return a value if it was set from the start
 	 */
 	public boolean getAnfang(int x, int y) {
 		return anfang[x][y];

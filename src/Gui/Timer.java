@@ -14,6 +14,13 @@ public class Timer extends Thread {
 	private String minS;
 	private String hourS;
 
+	/**
+	 * 	Starts a new selfmade Thread
+	 * @param game which game it has to up-date 
+	 * @param s	the seconds to start with
+	 * @param m the minutes to start with
+	 * @param h the hours to start with
+	 */
 	public Timer(Game game, int s, int m, int h) {
 		this.game = game;
 		setSec(s);

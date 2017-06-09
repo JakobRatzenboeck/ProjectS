@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import Gui.Auswahl;
 import Gui.Game;
-import Gui.Timer;
 import Music.Player;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -139,7 +138,6 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 				try {
 					game.getSt().save(game.getLoadpath());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				Game.configureFileChooser(game.getFileChooser());
@@ -152,7 +150,7 @@ public class AddsHandler implements EventHandler<ActionEvent> {
 			}
 
 			// Hilfe EIN/AUS
-		} else if (source == game.getHilfe() && game.getMMode() == false) {
+		} else if (source == game.getHilfe()) {
 			if (!game.getHilfe().isSelected()) {
 				for (int i = 0; i < 9; ++i) {
 					for (int j = 0; j < 9; ++j) {

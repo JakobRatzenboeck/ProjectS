@@ -15,7 +15,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -119,6 +118,11 @@ public class Optionen extends Dialog<ButtonType> {
 		fortg.setClosable(false);
 		allgemeinP.setAlignment(Pos.CENTER);
 		fortgP.setAlignment(Pos.CENTER);
+		meP.setVisible(false);
+		if(hTf.getText().equalsIgnoreCase("abcdef") && bTf.getText().equalsIgnoreCase("abcdef") && fTf.getText().equalsIgnoreCase("abcdef")) {
+			meP.setVisible(true);
+		}
+		
 		meP.setAlignment(Pos.CENTER);
 
 		meP.add(MeMode, 1, 1);

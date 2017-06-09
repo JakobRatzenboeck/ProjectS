@@ -1,9 +1,7 @@
 package Gui;
 
 import java.awt.Desktop;
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -17,15 +15,13 @@ import javafx.scene.image.Image;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class Main extends Application {
 
-	private int height;
-	private int width;
+	int height;
+	int width;
 
 	public Main() {
 
@@ -43,7 +39,6 @@ public class Main extends Application {
 			BorderPane root = new BorderPane();
 			Scene scene = new Scene(root, 400, 400);
 			primaryStage.setTitle("SUDOKU");
-
 			Label top = new Label("Sudoku");
 			top.setFont(new Font("Arial", 30));
 			Button start = new Button("Start");

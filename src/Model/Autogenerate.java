@@ -27,8 +27,10 @@ public class Autogenerate {
 	}
 
 	/**
-	 * @param fertigesfeld
-	 *            the fertigesfeld to set
+	 *  set a Number in the int Array
+	 * @param x cordinate
+	 * @param y cordinate
+	 * @param number is the value
 	 */
 	public void setFertigesfeld(int x, int y, int number) {
 		if (fertigesfeld[x][y] != 0 && number <= 9) {
@@ -42,9 +44,12 @@ public class Autogenerate {
 	public int[][] getFeld() {
 		return feld;
 	}
-	
+
 	/**
-	 * @return a specific value of feld
+	 *  To get a specific int
+	 * @param x cordinate
+	 * @param y cordinate
+	 * @return a value
 	 */
 	public int getFeld(int x, int y) {
 		return feld[x][y];
@@ -186,8 +191,8 @@ public class Autogenerate {
 	public void bereiten(int wieViele) {
 		backtracking();
 		Random random = new Random();
-		for(int y =0;y<9;++y) {
-			for(int x=0;x<9;++x) {
+		for (int y = 0; y < 9; ++y) {
+			for (int x = 0; x < 9; ++x) {
 				fertigesfeld[x][y] = feld[x][y];
 			}
 		}
@@ -209,35 +214,4 @@ public class Autogenerate {
 			}
 		}
 	}
-
-	public void print() {
-		System.out.println(" ╔═══╦═══╦═══╦╦═══╦═══╦═══╦╦═══╦═══╦═══╗");
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 9; j++) {
-				if (j == 3 || j == 6 || j == 9) {
-					System.out.print(" ║║ ");
-				} else {
-					System.out.print(" ║ ");
-				}
-				if (fertigesfeld[j][i] == 0) {
-					System.out.print(" ");
-				} else {
-					System.out.print(fertigesfeld[j][i]);
-				}
-			}
-			System.out.println(" ║");
-			if (i != 8) {
-				System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
-				if (i == 2 || i == 5) {
-					System.out.println(" ╠═══╬═══╬═══╬╬═══╬═══╬═══╬╬═══╬═══╬═══╣");
-				}
-			}
-		}
-		System.out.println(" ╚═══╩═══╩═══╩╩═══╩═══╩═══╩╩═══╩═══╩═══╝");
-	}
-
-	// public static void main(String[] args) {
-	// Autogenerate ag = new Autogenerate(64);
-	// ag.print();
-	// }
 }
